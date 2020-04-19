@@ -943,7 +943,9 @@ pre .javascript .function {
   }
 }
 .header {
-  background: transparent;
+  background: url("/images/bgi.jpg");
+  background-repeat: repeat-x;
+  background-size: auto 100%;
 }
 .header-inner {
   margin: 0 auto;
@@ -1169,7 +1171,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #cdffff;
+  background: #8c6ec2;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
