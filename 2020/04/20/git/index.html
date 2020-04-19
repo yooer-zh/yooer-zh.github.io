@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="SSH key生成命令： ssh-keygen -t rsa -C &quot;your_email@example.com&quot; 场景一：空仓库&amp;创建仓库提交代码新建一个文件夹，执行 git init命令初始化一个本地仓库">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入理解Git">
+<meta property="og:url" content="http://yoursite.com/2020/04/20/git/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="SSH key生成命令： ssh-keygen -t rsa -C &quot;your_email@example.com&quot; 场景一：空仓库&amp;创建仓库提交代码新建一个文件夹，执行 git init命令初始化一个本地仓库">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/2020/04/20/git/image-20200419125654052.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/20/git/image-20200419125706549.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/20/git/image-20200419130834029.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/20/git/image-20200419131918056.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/20/git/image-20200419132512720.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/20/git/image-20200419132642677.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/20/git/image-20200419133726337.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/20/git/image-20200419133649723.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/20/git/image-20200419133710364.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/20/git/image-20200419133920268.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/20/git/image-20200419134051346.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/20/git/image-20200419134328948.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/20/git/image-20200419134705141.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/20/git/image-20200419135437517.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/20/git/image-20200419135718052.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/20/git/image-20200419152847535.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/20/git/image-20200419153451745.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/20/git/image-20200419154036502.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/20/git/image-20200419154417126.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/20/git/image-20200419154428487.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/20/git/image-20200419161047474.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/20/git/image-20200419161203326.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/20/git/image-20200419161449052.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/20/git/image-20200419161558245.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/20/git/image-20200419161753260.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/20/git/image-20200419162004499.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/20/git/image-20200419162037595.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/20/git/image-20200419162700091.png">
+<meta property="article:published_time" content="2020-04-19T16:28:17.373Z">
+<meta property="article:modified_time" content="2020-04-19T16:29:21.230Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2020/04/20/git/image-20200419125654052.png">
+
+<link rel="canonical" href="http://yoursite.com/2020/04/20/git/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>深入理解Git | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/20/git/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          深入理解Git
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-04-20 00:28:17 / 修改时间：00:29:21" itemprop="dateCreated datePublished" datetime="2020-04-20T00:28:17+08:00">2020-04-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF%E6%9D%82%E8%B0%88-Git/" itemprop="url" rel="index"><span itemprop="name">技术杂谈 - Git</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="SSH-key"><a href="#SSH-key" class="headerlink" title="SSH key"></a>SSH key</h1><p>生成命令：</p>
+<p><code>ssh-keygen -t rsa -C &quot;your_email@example.com&quot;</code></p>
+<h1 id="场景一：空仓库-amp-创建仓库提交代码"><a href="#场景一：空仓库-amp-创建仓库提交代码" class="headerlink" title="场景一：空仓库&amp;创建仓库提交代码"></a>场景一：空仓库&amp;创建仓库提交代码</h1><p>新建一个文件夹，执行 <code>git init</code>命令初始化一个本地仓库</p>
+<a id="more"></a>
+
+<p>这时会在文件夹中创建一个 <code>/.git/</code> 的文件夹</p>
+<p>这个文件夹里面放的全部都是文件的<strong>快照</strong>，这些快照会有多个状态，git就是通过管理这些快照来对代码、文件进行版本管理的。</p>
+<p>下面可以通过 <code>git add exampleFile</code>  命令添加文件到git的管理仓库里了</p>
+<p>使用 <code>git status</code> 查看文件<strong>缓存</strong>的状态，有没有文件放在了待提交的区域</p>
+<p>注： git有两种操作： <code>add</code> 、 <code>commit</code>  只有commit操作后才会拍一个快照，这个<strong>快照就是一次提交</strong></p>
+<p><code>git commit -m &quot;first commit&quot;</code>  ， commit命令就把文件从缓存区提交到了本地仓库中，也就是一次快照。</p>
+<p>这时再使用 <code>git status</code> 查看状态就会显示</p>
+<p><img src="/2020/04/20/git/image-20200419125654052.png" alt="image-20200419125654052"></p>
+<p>此时如果使用 <code>git push origin master</code> ，会提示 不存在</p>
+<p><img src="/2020/04/20/git/image-20200419125706549.png" alt="image-20200419125706549"></p>
+<p>因为origin（初始）是自己创建出来的，要使用<code>git remote</code>创建，来告诉git需要推送到哪个远程仓库上去</p>
+<p><code>git remote add origin git@github.com:xx/learngit-1.git</code></p>
+<p> <em>附： <code>git clone</code> 命令会自动设置好 origin</em></p>
+<p>使用 <code>git remote add origin git@xx.com:xxx.git</code>，就可以push到远程仓库了</p>
+<h1 id="场景二：-推送代码到多个仓库"><a href="#场景二：-推送代码到多个仓库" class="headerlink" title="场景二： 推送代码到多个仓库"></a>场景二： 推送代码到多个仓库</h1><p>可以使用 <code>git remote -v</code> 查看是否已经有远程仓库的地址</p>
+<p>创景概述：</p>
+<p>同一个本地git仓库，可以分别给不同的远程仓库提交，就需要设置不同的<code>origin</code>来做远程仓库的区分</p>
+<p>新建一个空的远程仓库</p>
+<p>并在本地git仓库中执行 <code>git remote add origin2 git@github.com:xxx/learngit-2.git</code></p>
+<p>注意这里不再是 <code>origin</code> 而是设置为了 <code>origin2</code> </p>
+<p><img src="/2020/04/20/git/image-20200419130834029.png" alt="image-20200419130834029"></p>
+<p><em>附：这里不同的远程仓库可以设置到同一个origin里面，这种适用于 一次推送想推送到多个仓库里面去，使用的是git remot里面的 set url指令来设置的。</em></p>
+<p><em>但是不推荐这样做，因为一个仓库通常对应的是一个生产或发布的环境，那么就需要把一部分代码推送到正式的仓库中，也有一部分推送到自己或其他人的仓库。</em></p>
+<p>然后就可以自己决定代码推送到哪一个远程仓库了</p>
+<p><code>git push origin2 master</code></p>
+<h1 id="快照管理"><a href="#快照管理" class="headerlink" title="快照管理"></a>快照管理</h1><p><code>git add xx</code> 命令是再工作区内对文件进行管理操作</p>
+<p>本地会有一个 git的版本库</p>
+<p>首先在本地 有些文件是没有被git仓库进行管理的，也有一些是已经管理过的（或提交过）</p>
+<p>这时一个新文件做了一些新功能，就需要通过 <code>git add xx</code>命令添加到 本地版本库中的 临时管理区域(stage)中，这时git就开始监视这个文件了</p>
+<p>当做了一次正式的提交操作后 <code>commit</code> ，这个文件就会变成一次快照</p>
+<p><em>注：此时快照保存的是 文件的改变，而不是文件本身，否则git仓库会非常非常大</em></p>
+<p><img src="/2020/04/20/git/image-20200419131918056.png" alt="image-20200419131918056"></p>
+<h2 id="git-log"><a href="#git-log" class="headerlink" title="git log"></a>git log</h2><p><img src="/2020/04/20/git/image-20200419132512720.png" alt="image-20200419132512720"></p>
+<p>可以看到之前的提交，是谁提交的，什么时候提交的，以及提交的日志，很重要</p>
+<p>当需要进行 回滚 的时候，需要查看 hash值</p>
+<h2 id="git-reflog"><a href="#git-reflog" class="headerlink" title="git reflog"></a>git reflog</h2><p><img src="/2020/04/20/git/image-20200419132642677.png" alt="image-20200419132642677"></p>
+<p>主要是本地的提交，包括一些本地删除的提交，如果要撤回删除的提交，就可以使用 <code>git reflog</code>查看 hash值方便回退</p>
+<h2 id="git-comfig"><a href="#git-comfig" class="headerlink" title="git comfig"></a>git comfig</h2><p>配置，查看全局配置 ： <code>git config --global --list</code></p>
+<p><img src="/2020/04/20/git/image-20200419133726337.png" alt="image-20200419133726337"></p>
+<p>user.name 和 user.email 是必须要设置的，否则不能进行提交操作，如果没有设置，可以使用</p>
+<p><code>git config --global user.name &quot;example name&quot;</code></p>
+<p><code>git config --global user.email &quot;example@xx.com&quot;</code></p>
+<h1 id="git-reset"><a href="#git-reset" class="headerlink" title="git reset"></a>git reset</h1><p>回退，顺便演示 <code>git log</code> 和 <code>git reflog</code>的区别和使用方法</p>
+<p>首先新建 <code>321.txt</code>  并再进行一次新的提交</p>
+<p><img src="/2020/04/20/git/image-20200419133649723.png" alt="image-20200419133649723"></p>
+<p>使用 <code>git log</code>查看</p>
+<p><img src="/2020/04/20/git/image-20200419133710364.png" alt="image-20200419133710364"></p>
+<p>然后使用 <code>git reset</code> 命令回退到上一个版本，再使用git log查看时发现新版本就被删除掉了</p>
+<p><img src="/2020/04/20/git/image-20200419133920268.png" alt="image-20200419133920268"></p>
+<p>但是使用 <code>git reflog</code> 就发现  仍然可以查看本地所有的操作日志</p>
+<p><img src="/2020/04/20/git/image-20200419134051346.png" alt="image-20200419134051346"></p>
+<h1 id="git-branch"><a href="#git-branch" class="headerlink" title="git branch"></a>git branch</h1><p>创建分支</p>
+<p><img src="/2020/04/20/git/image-20200419134328948.png" alt=" "></p>
+<p>这时仍然可以使用 <code>git reflog</code>查看本地所有操作，此时HEAD指向的是 master分支上，后面会多出来一个 dev 分支，这个dev分支前面没有origin，说明此时dev是一个本地分支</p>
+<h1 id="git-checkout"><a href="#git-checkout" class="headerlink" title="git checkout"></a>git checkout</h1><p>此时进行操作 <code>git checkout dev</code> 切换到了dev分支</p>
+<p><img src="/2020/04/20/git/image-20200419134705141.png" alt="image-20200419134705141"></p>
+<p><code>git log</code> 只显示了当前指向了dev分支</p>
+<p><code>git reflog</code> 则显示了在什么时候切换到的dev分支</p>
+<h1 id="git-stash"><a href="#git-stash" class="headerlink" title="git stash"></a>git stash</h1><p>假如修改一下 <code>123.txt</code>，使用 <code>git status</code> 就可以看到已经被监控的<code>123.txt</code>文件被修改的log</p>
+<p>此时123的功能还没有开发完，不想提交到master分支上去</p>
+<p>就可以使用 <code>git stash</code> </p>
+<p><img src="/2020/04/20/git/image-20200419135437517.png" alt="image-20200419135437517"></p>
+<p>此时再使用 <code>git status</code> 就会发现变成了一个clean的工作区，而且此时123.txt文件内的修改会清空</p>
+<p>这个文件的修改部分去哪了，怎么找回来？</p>
+<p>使用 <code>git stash apply</code></p>
+<p><img src="/2020/04/20/git/image-20200419135718052.png" alt="image-20200419135718052"></p>
+<p>文件就回来了</p>
+<p><em>适用场景： 在一个分支上开发过程中，需要去别的分支看一眼，但是如果直接切换分支的话会提示有文件被修改，无法切换分支。这时就可以使用 git stash 把当前分支的状态缓存一下，就可以进行分支的切换了。想恢复就使用 git stash apply</em></p>
+<h1 id="git-diff"><a href="#git-diff" class="headerlink" title="git diff"></a>git diff</h1><p>想查看当前分支下哪些文件发生了什么变化</p>
+<p><img src="/2020/04/20/git/image-20200419152847535.png" alt="image-20200419152847535"></p>
+<h1 id="Git-Flow-（重点）"><a href="#Git-Flow-（重点）" class="headerlink" title="Git Flow （重点）"></a>Git Flow （重点）</h1><p>开发环境可能会有 自我测试环境、用户测试alpha、beta环境，正式环境</p>
+<p>这里不讨论经典模型的问题</p>
+<h2 id="1-适用于持续集成的模型"><a href="#1-适用于持续集成的模型" class="headerlink" title="1. 适用于持续集成的模型"></a>1. 适用于持续集成的模型</h2><p><img src="/2020/04/20/git/image-20200419153451745.png" alt="image-20200419153451745"></p>
+<p>在<code>master</code>分支上进行开发提交，一旦到版本需要发布的时候，就把代码合并到 <code>pre-production</code>分支上去，这样就算完成了一次测试提交了（预发布）</p>
+<p>如果预发布版本没什么问题，就可以合并到 <code>production</code> 分支上了，production上的代码就自动进行构建</p>
+<ul>
+<li>适用于持续集成多环境场景</li>
+<li>上游分支向下游发展</li>
+</ul>
+<p>流程：</p>
+<p>Bug -&gt; New Branch -&gt; master -&gt; pre branch -&gt; Target Branch</p>
+<h2 id="2-类Vue、React的模型"><a href="#2-类Vue、React的模型" class="headerlink" title="2. 类Vue、React的模型"></a>2. 类Vue、React的模型</h2><p><img src="/2020/04/20/git/image-20200419154036502.png" alt="image-20200419154036502"></p>
+<p>大家都在master分支上开发，当需要对master分支发布一个比较稳定的版本的时候，直接从master分支上新建一个分支出来，然后在这个分支上进行一些小的BUG修复</p>
+<ul>
+<li>适用于版本项目</li>
+<li>稳定版本从master检出  bug修复在分支</li>
+</ul>
+<p>流程： master -&gt; Stable -&gt; new branch -&gt; bug fix -&gt;version</p>
+<h2 id="演示-Vue的github"><a href="#演示-Vue的github" class="headerlink" title="演示 Vue的github"></a>演示 Vue的github</h2><p><img src="/2020/04/20/git/image-20200419154417126.png" alt="image-20200419154417126"></p>
+<p><img src="/2020/04/20/git/image-20200419154428487.png" alt="image-20200419154428487"></p>
+<p>Vue的github上，大家都是在dev分支上玩，然后直接从dev分支checkout版本分支出来</p>
+<p>好处： 保证稳定的版本</p>
+<h1 id="实操-git-flow"><a href="#实操-git-flow" class="headerlink" title="实操 git flow"></a>实操 git flow</h1><p>准备两个本地仓库，remote为同一个远程仓库的origin</p>
+<p>拉取远程分支：</p>
+<p><code>git pull origin master</code></p>
+<p>假设这两个文件夹是两个不同的人在协同开发</p>
+<p>那么两个人就需要商定：</p>
+<p>每个人都在自己的 <code>dev</code> 分支上玩，<code>git branch</code> 查看分支，<code>git branch dev</code> 创建分支，就从master分支上检出（复制）了一份代码</p>
+<p>因为在现实生活中，多人协作的时候，一般来说除了管理员，一般人是没有master分支的推送权限的，只能拉取</p>
+<p><em>附： 快速创建并切换分支命令： <code>git checkout -b dev</code></em></p>
+<p><em>注意：如果当前分支上有代码修改的话，是不允许切换到其他分支的。这时就需要经常使用 <code>git status</code> 命令查看当前分支的情况</em></p>
+<p>现在，两个同事在各自的<code>dev</code>分支上 同时修改了 <code>123.txt</code>， 第一个同事 push 到 dev分支是可以正常推送的</p>
+<p><img src="/2020/04/20/git/image-20200419161047474.png" alt="image-20200419161047474"></p>
+<p>但是当第一位同事推送过后，第二位同事再进行push，就会出现错误</p>
+<p><img src="/2020/04/20/git/image-20200419161203326.png" alt="image-20200419161203326"></p>
+<p>提示说 远程的dev分支上已经有了一个<strong>本地尚不存在</strong>的提交</p>
+<p>这时有两种方法</p>
+<ol>
+<li><p>大众做法，根据提示 使用 <code>git pull</code>，会自动执行合并</p>
+<p>此时因为两位同事对同一个文件进行了修改，所以肯定会遇到合并冲突</p>
+<p><img src="/2020/04/20/git/image-20200419161449052.png" alt="image-20200419161449052"></p>
+<p>使用 <code>git status</code> 查看一下状态，说双方都修改了 <code>123.txt</code></p>
+<p><img src="/2020/04/20/git/image-20200419161558245.png" alt="image-20200419161558245"></p>
+<p>此时打开 <code>123.txt</code>文件，会出现git生成的分隔</p>
+<p>上面的HEAD是本地本分支上的代码，下面就是远程代码的变化</p>
+<p><img src="/2020/04/20/git/image-20200419161753260.png" alt="image-20200419161753260"></p>
+<p>此时修改好内容，保留本地的修改，然后执行 <code>git add 123.txt</code> <code>git commit</code></p>
+<p>！ 此时再使用 <code>git status</code> 查看时发现当前是一个干净的分支</p>
+<p><img src="/2020/04/20/git/image-20200419162004499.png" alt="image-20200419162004499"></p>
+<p>这时再push dev 就可以了</p>
+<p><img src="/2020/04/20/git/image-20200419162037595.png" alt="image-20200419162037595"></p>
+</li>
+<li><p>先进的解决办法 <code>git fetch</code></p>
+<p>！ <code>git pull</code>命令相当于是 <code>git fetch</code> + <code>git merge</code></p>
+<p><code>git fetch</code>命令只会拉取远程更新，但是不会把远程的更新合并到本地分支里面去。</p>
+<p>简单说就是看一下远端分支和我本地分支有什么不一样</p>
+<p><img src="/2020/04/20/git/image-20200419162700091.png" alt="image-20200419162700091"></p>
+<p>会提示远程有一个更新，现在已经把更新的内容放到了<code>FETCH_HEAD</code>中</p>
+<p><code>git merge FETCH_HEAD</code> 就相当于合并两边的代码，就和直接使用 <code>git pull</code> 命令效果一样了。</p>
+<p>如果 使用<code>git fetch origin feature:dev1</code> ，意思是把远端的feature分支合并到本地的 dev1分支上，如果dev1不存在，则会自动创建，并且此时 dev1分支上的代码就是 远端feature分支的代码了</p>
+<p>此时再切换到 <code>dev</code> 分支上  使用 <code>git merge dev1</code> 就可以把代码合并到dev分支上来了</p>
+<p>但是如果感觉远端的代码不好，又不想<code>merge</code>了怎么办？</p>
+<p>使用 <code>git reset --hard head^</code> 回退到上一次提交的快照</p>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/19/hello-world/" rel="prev" title="Hello World">
+      <i class="fa fa-chevron-left"></i> Hello World
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#SSH-key"><span class="nav-number">1.</span> <span class="nav-text">SSH key</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#场景一：空仓库-amp-创建仓库提交代码"><span class="nav-number">2.</span> <span class="nav-text">场景一：空仓库&amp;创建仓库提交代码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#场景二：-推送代码到多个仓库"><span class="nav-number">3.</span> <span class="nav-text">场景二： 推送代码到多个仓库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#快照管理"><span class="nav-number">4.</span> <span class="nav-text">快照管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#git-log"><span class="nav-number">4.1.</span> <span class="nav-text">git log</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git-reflog"><span class="nav-number">4.2.</span> <span class="nav-text">git reflog</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git-comfig"><span class="nav-number">4.3.</span> <span class="nav-text">git comfig</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#git-reset"><span class="nav-number">5.</span> <span class="nav-text">git reset</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#git-branch"><span class="nav-number">6.</span> <span class="nav-text">git branch</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#git-checkout"><span class="nav-number">7.</span> <span class="nav-text">git checkout</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#git-stash"><span class="nav-number">8.</span> <span class="nav-text">git stash</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#git-diff"><span class="nav-number">9.</span> <span class="nav-text">git diff</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Git-Flow-（重点）"><span class="nav-number">10.</span> <span class="nav-text">Git Flow （重点）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-适用于持续集成的模型"><span class="nav-number">10.1.</span> <span class="nav-text">1. 适用于持续集成的模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-类Vue、React的模型"><span class="nav-number">10.2.</span> <span class="nav-text">2. 类Vue、React的模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#演示-Vue的github"><span class="nav-number">10.3.</span> <span class="nav-text">演示 Vue的github</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实操-git-flow"><span class="nav-number">11.</span> <span class="nav-text">实操 git flow</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">John Doe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
