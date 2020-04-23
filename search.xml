@@ -72,6 +72,92 @@
       </categories>
   </entry>
   <entry>
+    <title>Docker快速上手</title>
+    <url>/2020/01/20/docker/</url>
+    <content><![CDATA[<h1 id="Docker"><a href="#Docker" class="headerlink" title="Docker"></a>Docker</h1><p><img src="/2020/01/20/docker/docker01.png" alt="img"></p><p>Docker 是一个开源的应用容器引擎，基于 <a href="https://www.runoob.com/go/go-tutorial.html" target="_blank" rel="noopener">Go 语言</a> 并遵从 Apache2.0 协议开源。</p><p>Docker 可以让开发者打包他们的应用以及依赖包到一个轻量级、可移植的容器中，然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。</p><a id="more"></a>
+
+
+<p>容器是完全使用沙箱机制，相互之间不会有任何接口（类似 iPhone 的 app）,更重要的是容器性能开销极低。</p>
+<p>Docker 从 17.03 版本之后分为 CE（Community Edition: 社区版） 和 EE（Enterprise Edition: 企业版），我们用社区版就可以了。</p>
+<p>docker技术主要应用在<strong>容器化应用</strong>上。</p>
+<p><img src="/2020/01/20/docker/PB-Snipaste-12-31-52-403044032023.png" alt="PB-Snipaste-12-31-52-403044032023"></p>
+<h1 id="docker虚拟技术和传统虚拟机区别"><a href="#docker虚拟技术和传统虚拟机区别" class="headerlink" title="docker虚拟技术和传统虚拟机区别"></a>docker虚拟技术和传统虚拟机区别</h1><p><img src="/2020/01/20/docker/PB-Snipaste-12-39-01-539045392023.png" alt="PB-Snipaste-12-39-01-539045392023"></p>
+<h1 id="docker主要特性"><a href="#docker主要特性" class="headerlink" title="docker主要特性"></a>docker主要特性</h1><ul>
+<li>文件、资源、网络隔离</li>
+<li><strong>变更管理</strong>、日志记录</li>
+<li><strong>写时复制</strong>的方式创建的根文件系统</li>
+</ul>
+<h1 id="docker安装演示"><a href="#docker安装演示" class="headerlink" title="docker安装演示"></a>docker安装演示</h1><p>环境：</p>
+<p><img src="/2020/01/20/docker/PB-Snipaste-12-58-02-728047282023.png" alt="PB-Snipaste-12-58-02-728047282023"></p>
+<h2 id="删除之前安装过的docker"><a href="#删除之前安装过的docker" class="headerlink" title="删除之前安装过的docker"></a>删除之前安装过的docker</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo yum remove docker \</span><br><span class="line">docker-client \</span><br><span class="line">docker-client-latest \</span><br><span class="line">docker-common \</span><br><span class="line">docker-latest \</span><br><span class="line">docker-latest-logrotate \</span><br><span class="line">docker-logrotate \</span><br><span class="line">docker-engine</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo yum install -y yum-utils \</span><br><span class="line">device-mapper-persistent-data \</span><br><span class="line">lvm2</span><br></pre></td></tr></table></figure>
+
+<h2 id="添加stable的Docker-ce源"><a href="#添加stable的Docker-ce源" class="headerlink" title="添加stable的Docker-ce源"></a>添加stable的Docker-ce源</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo yum-config-manager \</span><br><span class="line">    --add-repo \</span><br><span class="line">    https://download.docker.com/linux/centos/docker-ce.repo</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装docker"><a href="#安装docker" class="headerlink" title="安装docker"></a>安装docker</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo yum install docker-ce docker-ce-cli containerd.io</span><br></pre></td></tr></table></figure>
+
+<h2 id="测试安装"><a href="#测试安装" class="headerlink" title="测试安装"></a>测试安装</h2><p>使用 <code>systemctl start docker</code> 运行起docker来</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">systemctl start docker</span><br></pre></td></tr></table></figure>
+
+<p>查看docker进程</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">systemctl status docker</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2020/01/20/docker/PB-Snipaste-13-18-19-128041282023.png" alt="PB-Snipaste-13-18-19-128041282023"></p>
+<h2 id="第一个docker应用-hello-world"><a href="#第一个docker应用-hello-world" class="headerlink" title="第一个docker应用 - hello-world"></a>第一个docker应用 - hello-world</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker run hello-world</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2020/01/20/docker/PB-Snipaste-13-22-58-499044992023.png" alt="PB-Snipaste-13-22-58-499044992023"></p>
+<h2 id="使用docker中国官方镜像加速"><a href="#使用docker中国官方镜像加速" class="headerlink" title="使用docker中国官方镜像加速"></a>使用docker中国官方镜像加速</h2><p>编辑 <code>/etc/docker/daemon.json</code> ，没有就创建改文件</p>
+<p>添加以下内容</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"registry-mirrors"</span>:[<span class="string">"https://registry.docker-cn.com"</span>]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后重启 daemon和docker进程</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">systemctl daemon-reload</span><br><span class="line"></span><br><span class="line">systemctl restart docker</span><br></pre></td></tr></table></figure>
+
+<p><em>附： ubuntu上可以使用 <code>service docker restart</code></em> 重启docker镜像</p>
+<h2 id="docker-常用命令"><a href="#docker-常用命令" class="headerlink" title="docker 常用命令"></a>docker 常用命令</h2><ul>
+<li><p><code>docker ps</code> 查看正在运行的容器</p>
+</li>
+<li><p><code>docker ps -a</code> 查看所有容器</p>
+</li>
+<li><p><code>docker stop &lt;id/name&gt;</code> 停止容器</p>
+</li>
+<li><p><code>docker rm &lt;id/name&gt;</code> 删除一个已经停止的容器</p>
+<p><em>注：正在运行的容器是无法删除的</em></p>
+</li>
+<li><p><code>docker logs -f &lt;id/name&gt;</code>  打印log -f表示持续打印</p>
+</li>
+<li><p><code>docker exec [OPTIONS] CONTAINER COMMAND [ARG...]</code> 在运行的容器中执行命令</p>
+<ul>
+<li><strong>-d :</strong>分离模式: 在后台运行</li>
+<li><strong>-i :</strong>即使没有附加也保持STDIN 打开</li>
+<li><strong>-t :</strong>分配一个伪终端</li>
+</ul>
+<p><em>附：进入docker容器 <code>docker exec -i -t  &lt;id/name&gt;/bin/bash</code></em></p>
+</li>
+</ul>
+<h2 id="安装mysql的docker容器"><a href="#安装mysql的docker容器" class="headerlink" title="安装mysql的docker容器"></a>安装mysql的docker容器</h2><p>进入 <a href="https://hub.docker.com/" target="_blank" rel="noopener">Docker Hub</a>， 找到mysql容器的安装方式</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:tag</span><br></pre></td></tr></table></figure>
+
+<p>替换一些参数，自定义一下容器名和密码，这里缺省了 <code>:tag</code> ，就会默认拉取最新的镜像，也可以将<code>tag</code> 设置为想要拉取的版本，参数 <code>-d</code> 意思是后台运行</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker run --name zy-mysql -e MYSQL_ROOT_PASSWORD=123456 -d mysql</span><br></pre></td></tr></table></figure>
+
+<p>然后可以使用 docker ps 查看下载好的镜像了</p>
+<h3 id="映射mysql服务的端口号-p"><a href="#映射mysql服务的端口号-p" class="headerlink" title="映射mysql服务的端口号 -p"></a>映射mysql服务的端口号 <code>-p</code></h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker run --name zy-mysql -e MYSQL_ROOT_PASSWORD=123456 -p 23457:3306 -d mysql</span><br></pre></td></tr></table></figure>
+
+<p>可以看到 <code>-p</code>参数后跟着的 <code>23457:3306</code> ，前面的数字代表 外部（宿主机）端口，后面的数字代表docker内部的端口</p>
+<h2 id="进入容器看一眼"><a href="#进入容器看一眼" class="headerlink" title="进入容器看一眼"></a>进入容器看一眼</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker exec -it zy-mysql /bin/bash</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>技术杂谈
+- 运维</category>
+      </categories>
+      <tags>
+        <tag>Docker</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>深入理解Git</title>
     <url>/2019/12/28/git/</url>
     <content><![CDATA[<h1 id="SSH-key"><a href="#SSH-key" class="headerlink" title="SSH key"></a>SSH key</h1><p>生成命令：</p><p><code>ssh-keygen -t rsa -C &quot;your_email@example.com&quot;</code></p><h1 id="场景一：空仓库-amp-创建仓库提交代码"><a href="#场景一：空仓库-amp-创建仓库提交代码" class="headerlink" title="场景一：空仓库&amp;创建仓库提交代码"></a>场景一：空仓库&amp;创建仓库提交代码</h1><p>新建一个文件夹，执行 <code>git init</code>命令初始化一个本地仓库</p><a id="more"></a>
