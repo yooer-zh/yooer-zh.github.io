@@ -64,8 +64,18 @@
 <meta property="og:image" content="http://yoursite.com/2020/01/20/docker/PB-Snipaste-12-58-02-728047282023.png">
 <meta property="og:image" content="http://yoursite.com/2020/01/20/docker/PB-Snipaste-13-18-19-128041282023.png">
 <meta property="og:image" content="http://yoursite.com/2020/01/20/docker/PB-Snipaste-13-22-58-499044992023.png">
+<meta property="og:image" content="http://yoursite.com/2020/01/20/docker/PB-Snipaste-16-04-18-727047272024.png">
+<meta property="og:image" content="http://yoursite.com/2020/01/20/docker/PB-Snipaste-17-38-50-639046392024.png">
+<meta property="og:image" content="http://yoursite.com/2020/01/20/docker/PB-Snipaste-17-52-35-335043352024.png">
+<meta property="og:image" content="http://yoursite.com/2020/01/20/docker/PB-Snipaste-17-59-08-911049112024.png">
+<meta property="og:image" content="http://yoursite.com/2020/01/20/docker/PB-Snipaste-17-59-56-488044882024.png">
+<meta property="og:image" content="http://yoursite.com/2020/01/20/docker/PB-Snipaste-18-04-21-3604362024.png">
+<meta property="og:image" content="http://yoursite.com/2020/01/20/docker/PB-Snipaste-18-08-26-511045112024.png">
+<meta property="og:image" content="http://yoursite.com/2020/01/20/docker/PB-Snipaste-18-09-50-903049032024.png">
+<meta property="og:image" content="http://yoursite.com/2020/01/20/docker/PB-Snipaste-18-12-00-167041672024.png">
+<meta property="og:image" content="http://yoursite.com/2020/01/20/docker/PB-Snipaste-18-15-18-227042272024.png">
 <meta property="article:published_time" content="2020-01-20T04:00:00.000Z">
-<meta property="article:modified_time" content="2020-04-23T17:14:10.287Z">
+<meta property="article:modified_time" content="2020-04-24T10:17:27.874Z">
 <meta property="article:author" content="张一二">
 <meta property="article:tag" content="Docker">
 <meta name="twitter:card" content="summary">
@@ -350,6 +360,39 @@
 <h2 id="进入容器看一眼"><a href="#进入容器看一眼" class="headerlink" title="进入容器看一眼"></a>进入容器看一眼</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it zy-mysql /bin/bash</span><br></pre></td></tr></table></figure>
 
 
+
+<h1 id="docker-compose"><a href="#docker-compose" class="headerlink" title="docker-compose"></a>docker-compose</h1><p>一个场景：当我们有多个docker容器需要统一管理的时候，难道要一个个的run、stop吗？</p>
+<p>显然这样操作太繁琐。</p>
+<p>这时就需要一个集成工具，来帮我们统一管理多个docker镜像，查看、启动、停止等。</p>
+<p>使用一个 <code>.yml</code> 文件来统一管理。</p>
+<p><img src="/2020/01/20/docker/PB-Snipaste-16-04-18-727047272024.png" alt="PB-Snipaste-16-04-18-727047272024"></p>
+<h2 id="安装docker-compose"><a href="#安装docker-compose" class="headerlink" title="安装docker-compose"></a>安装docker-compose</h2><p>参考<a href="https://docs.docker.com/compose/install/" target="_blank" rel="noopener">官方文档</a></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 下载</span></span><br><span class="line">sudo curl -L "https://github.com/docker/compose/releases/download/1.25.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose</span><br><span class="line"><span class="meta">#</span><span class="bash"> 给予执行权限</span></span><br><span class="line">sudo chmod +x /usr/local/bin/docker-compose</span><br><span class="line"><span class="meta">#</span><span class="bash"> 测试</span></span><br><span class="line">docker-compose --version</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>附：安装后执行docker-compose提示 <a href="https://blog.csdn.net/alen_xiaoxin/article/details/104849962" target="_blank" rel="noopener">Cannot open self /usr/local/bin/docker-compose or archive /usr/local/bin/docker-compoe.pkg解决办法</a></p>
+</blockquote>
+<h2 id="编辑-docker-compose-yml-文件"><a href="#编辑-docker-compose-yml-文件" class="headerlink" title="编辑 docker-compose.yml 文件"></a>编辑 docker-compose.yml 文件</h2><p>这里演示启动两个 mysql服务，<code>mysql1</code> 和 <code>mysql2</code></p>
+<p><img src="/2020/01/20/docker/PB-Snipaste-17-38-50-639046392024.png" alt="PB-Snipaste-17-38-50-639046392024"></p>
+<p><em>附： 上图有语法错误，line8、15 的 <code>-</code> 后面应有一个空格</em></p>
+<h2 id="批量启动镜像"><a href="#批量启动镜像" class="headerlink" title="批量启动镜像"></a>批量启动镜像</h2><p>然后就可以使用 <code>docker-compose up -d</code> 根据 <code>.yml</code>文件配置来创建两个容器了</p>
+<p><img src="/2020/01/20/docker/PB-Snipaste-17-52-35-335043352024.png" alt="PB-Snipaste-17-52-35-335043352024"></p>
+<h2 id="停止"><a href="#停止" class="headerlink" title="停止"></a>停止</h2><p>使用<code>docker-compose stop</code> 批量停止</p>
+<p><img src="/2020/01/20/docker/PB-Snipaste-17-59-08-911049112024.png" alt="PB-Snipaste-17-59-08-911049112024"></p>
+<h2 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h2><p><code>docker-compose rm</code></p>
+<p><img src="/2020/01/20/docker/PB-Snipaste-17-59-56-488044882024.png" alt="PB-Snipaste-17-59-56-488044882024"></p>
+<h1 id="使用Docker-hub-提交、拉取自己的镜像"><a href="#使用Docker-hub-提交、拉取自己的镜像" class="headerlink" title="使用Docker hub 提交、拉取自己的镜像"></a>使用<a href="https://hub.docker.com/" target="_blank" rel="noopener">Docker hub</a> 提交、拉取自己的镜像</h1><h2 id="登录"><a href="#登录" class="headerlink" title="登录"></a>登录</h2><p>使用 <code>docker login</code> 可以登录自己的docker账号，然后就可以提交和拉取了</p>
+<p><img src="/2020/01/20/docker/PB-Snipaste-18-04-21-3604362024.png" alt="PB-Snipaste-18-04-21-3604362024"></p>
+<h2 id="创建image"><a href="#创建image" class="headerlink" title="创建image"></a>创建image</h2><p>使用 <code>docker commit 57d92a983a62（容器id） &lt;dockerhub前缀&gt;/&lt;上传的name&gt;[:tag]</code> 来创建镜像</p>
+<p><img src="/2020/01/20/docker/PB-Snipaste-18-08-26-511045112024.png" alt="PB-Snipaste-18-08-26-511045112024"></p>
+<p>使用 <code>docker images</code> 看一眼自己的镜像</p>
+<p><img src="/2020/01/20/docker/PB-Snipaste-18-09-50-903049032024.png" alt="PB-Snipaste-18-09-50-903049032024"></p>
+<h2 id="推送"><a href="#推送" class="headerlink" title="推送"></a>推送</h2><p><code>docker push &lt;dockerhub前缀&gt;/&lt;上传的name&gt;[:tag]</code></p>
+<p>有一些已经存在远端的文件就会 Mounted ，不会再次推送，节约了推送的时间。</p>
+<p><img src="/2020/01/20/docker/PB-Snipaste-18-12-00-167041672024.png" alt="PB-Snipaste-18-12-00-167041672024"></p>
+<p><img src="/2020/01/20/docker/PB-Snipaste-18-15-18-227042272024.png" alt="PB-Snipaste-18-15-18-227042272024"></p>
+<h2 id="拉取"><a href="#拉取" class="headerlink" title="拉取"></a>拉取</h2><p>推送成功后可以在随意一台机器上使用 <code>docker pull &lt;dockerhub前缀&gt;/&lt;上传的name&gt;[:tag]</code> 拉取镜像了</p>
+
     </div>
 
     
@@ -414,7 +457,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Docker"><span class="nav-number">1.</span> <span class="nav-text">Docker</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker虚拟技术和传统虚拟机区别"><span class="nav-number">2.</span> <span class="nav-text">docker虚拟技术和传统虚拟机区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker主要特性"><span class="nav-number">3.</span> <span class="nav-text">docker主要特性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker安装演示"><span class="nav-number">4.</span> <span class="nav-text">docker安装演示</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#删除之前安装过的docker"><span class="nav-number">4.1.</span> <span class="nav-text">删除之前安装过的docker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装依赖"><span class="nav-number">4.2.</span> <span class="nav-text">安装依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#添加stable的Docker-ce源"><span class="nav-number">4.3.</span> <span class="nav-text">添加stable的Docker-ce源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装docker"><span class="nav-number">4.4.</span> <span class="nav-text">安装docker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试安装"><span class="nav-number">4.5.</span> <span class="nav-text">测试安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第一个docker应用-hello-world"><span class="nav-number">4.6.</span> <span class="nav-text">第一个docker应用 - hello-world</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用docker中国官方镜像加速"><span class="nav-number">4.7.</span> <span class="nav-text">使用docker中国官方镜像加速</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker-常用命令"><span class="nav-number">4.8.</span> <span class="nav-text">docker 常用命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装mysql的docker容器"><span class="nav-number">4.9.</span> <span class="nav-text">安装mysql的docker容器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#映射mysql服务的端口号-p"><span class="nav-number">4.9.1.</span> <span class="nav-text">映射mysql服务的端口号 -p</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进入容器看一眼"><span class="nav-number">4.10.</span> <span class="nav-text">进入容器看一眼</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Docker"><span class="nav-number">1.</span> <span class="nav-text">Docker</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker虚拟技术和传统虚拟机区别"><span class="nav-number">2.</span> <span class="nav-text">docker虚拟技术和传统虚拟机区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker主要特性"><span class="nav-number">3.</span> <span class="nav-text">docker主要特性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker安装演示"><span class="nav-number">4.</span> <span class="nav-text">docker安装演示</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#删除之前安装过的docker"><span class="nav-number">4.1.</span> <span class="nav-text">删除之前安装过的docker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装依赖"><span class="nav-number">4.2.</span> <span class="nav-text">安装依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#添加stable的Docker-ce源"><span class="nav-number">4.3.</span> <span class="nav-text">添加stable的Docker-ce源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装docker"><span class="nav-number">4.4.</span> <span class="nav-text">安装docker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试安装"><span class="nav-number">4.5.</span> <span class="nav-text">测试安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第一个docker应用-hello-world"><span class="nav-number">4.6.</span> <span class="nav-text">第一个docker应用 - hello-world</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用docker中国官方镜像加速"><span class="nav-number">4.7.</span> <span class="nav-text">使用docker中国官方镜像加速</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker-常用命令"><span class="nav-number">4.8.</span> <span class="nav-text">docker 常用命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装mysql的docker容器"><span class="nav-number">4.9.</span> <span class="nav-text">安装mysql的docker容器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#映射mysql服务的端口号-p"><span class="nav-number">4.9.1.</span> <span class="nav-text">映射mysql服务的端口号 -p</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进入容器看一眼"><span class="nav-number">4.10.</span> <span class="nav-text">进入容器看一眼</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker-compose"><span class="nav-number">5.</span> <span class="nav-text">docker-compose</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装docker-compose"><span class="nav-number">5.1.</span> <span class="nav-text">安装docker-compose</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编辑-docker-compose-yml-文件"><span class="nav-number">5.2.</span> <span class="nav-text">编辑 docker-compose.yml 文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#批量启动镜像"><span class="nav-number">5.3.</span> <span class="nav-text">批量启动镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#停止"><span class="nav-number">5.4.</span> <span class="nav-text">停止</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除"><span class="nav-number">5.5.</span> <span class="nav-text">删除</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用Docker-hub-提交、拉取自己的镜像"><span class="nav-number">6.</span> <span class="nav-text">使用Docker hub 提交、拉取自己的镜像</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#登录"><span class="nav-number">6.1.</span> <span class="nav-text">登录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建image"><span class="nav-number">6.2.</span> <span class="nav-text">创建image</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#推送"><span class="nav-number">6.3.</span> <span class="nav-text">推送</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#拉取"><span class="nav-number">6.4.</span> <span class="nav-text">拉取</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
