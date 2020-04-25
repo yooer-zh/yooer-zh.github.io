@@ -1,6 +1,226 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>GitLab搭建(docker环境)</title>
+    <url>/2020/03/01/Gitlab/</url>
+    <content><![CDATA[<h1 id="Gitlab优点"><a href="#Gitlab优点" class="headerlink" title="Gitlab优点"></a>Gitlab优点</h1><p>Gitlab也是一个git平台，管理仓库和项目</p><ul>
+<li>现在很多Git平台对团队协作人数有限制</li>
+<li>可定制化对接自动化平台Jenkins</li>
+<li>可定制样式、哪些邮箱可以注册</li>
+<li>可设置每个用户可以上传的文件数的大小</li>
+</ul><a id="more"></a>
+
+<h1 id="安装GitLab"><a href="#安装GitLab" class="headerlink" title="安装GitLab"></a>安装GitLab</h1><p>参考： <a href="https://about.gitlab.com/install/" target="_blank" rel="noopener">官方文档</a>，找到<a href="https://docs.gitlab.com/ee/install/docker.html" target="_blank" rel="noopener">以Docker方式安装</a>。</p>
+<p>可以找到最简单的一种方法来快速进行GitLab平台的测试和运行。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo docker run --detach \</span><br><span class="line">  --hostname gitlab.example.com \</span><br><span class="line">  --publish 443:443 --publish 80:80 --publish 22:22 \</span><br><span class="line">  --name gitlab \</span><br><span class="line">  --restart always \</span><br><span class="line">  --volume $GITLAB_HOME/gitlab/config:/etc/gitlab \</span><br><span class="line">  --volume $GITLAB_HOME/gitlab/logs:/var/log/gitlab \</span><br><span class="line">  --volume $GITLAB_HOME/gitlab/data:/var/opt/gitlab \</span><br><span class="line">  gitlab/gitlab-ce:latest</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>附：各种参数的意义： </p>
+<ul>
+<li>–detach： 等同于 <code>-d</code> ，后台运行。</li>
+<li>–hostname：指定域名，建议使用云服务器，域名指向IP，可以更方便的访问和迁移。也可以是虚拟机的IP。</li>
+<li>–publish： 一些端口的映射，前面的数字是宿主机的端口。</li>
+<li>–name gitlab：指定的镜像的名称。</li>
+<li>–restart：当Docker服务重启的时候，GitLab服务自动重启。</li>
+<li>–volume：Docker容器内的GitLab服务的数据映射到宿主机上。</li>
+</ul>
+</blockquote>
+<p>下面就在虚拟机里修改一下命令：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 这里只做测试运行，所以删除了一些参数</span></span><br><span class="line">sudo docker run --detach \</span><br><span class="line">  --hostname 192.168.1.117 \</span><br><span class="line">  --publish 18800:80 --publish 12222:22 \</span><br><span class="line">  --name gitlab \</span><br><span class="line">  --restart always \</span><br><span class="line">  gitlab/gitlab-ce:latest</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>附： 开放防火墙端口</p>
+<p><code>firewall-cmd --add-port=18800/tcp --permanent</code></p>
+<p><code>firewall-cmd --reload</code></p>
+</blockquote>
+<p>等待一下，可以通过<code>docker logs -f xxxx</code> 来实时打印gitlab的日志查看</p>
+<p><em>注： 这种方法没有传入任何的username和pwd，默认用户名是root，在第一次访问的时候提示设置管理员密码。</em></p>
+<p>访问页面大概长这个样子。</p>
+<p><img src="/2020/03/01/Gitlab/PB-Snipaste-01-07-19-351043512025.png" alt="PB-Snipaste-01-07-19-351043512025"></p>
+<p>但是使用 <code>docker run</code> 快速生成的gitlab服务远达不到生产的需求，比如没有HTTPS协议、SSH克隆项目的默认端口设置、邮件提示服务（merge request）、找回密码等等。</p>
+<h1 id="使用docker-compose-搭建"><a href="#使用docker-compose-搭建" class="headerlink" title="使用docker-compose 搭建"></a>使用docker-compose 搭建</h1><p>同样在官方文档中有<a href="https://docs.gitlab.com/omnibus/docker/#install-gitlab-using-docker-compose" target="_blank" rel="noopener">install GitLab using docker-compose</a></p>
+<p><img src="/2020/03/01/Gitlab/PB-Snipaste-12-54-17-763047632025.png" alt="PB-Snipaste-12-54-17-763047632025"></p>
+<p>我们选择更方便的方法</p>
+<p>在github上有 <a href="https://github.com/sameersbn/docker-gitlab" target="_blank" rel="noopener">docker-gitlab</a> 项目，里面有很多功能比如升级、备份、恢复、邮箱等等功能都准备好了。</p>
+<p>找到项目中的 <a href="https://github.com/sameersbn/docker-gitlab/blob/master/docker-compose.yml" target="_blank" rel="noopener">docker-compose.yml</a> 文件，文件很长，我们按需设置就行了。</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">GITLAB_HOST=localhost</span>  <span class="comment"># IP地址</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">GITLAB_PORT=10080</span>  <span class="comment"># gitlab端口</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">GITLAB_SSH_PORT=10022</span> <span class="comment"># SSH端口</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">GITLAB_RELATIVE_URL_ROOT=</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alphanumeric-string</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">GITLAB_SECRETS_SECRET_KEY_BASE=long-and-random-alphanumeric-string</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">GITLAB_SECRETS_OTP_KEY_BASE=long-and-random-alphanumeric-string</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> <span class="string">GITLAB_ROOT_PASSWORD=</span> <span class="comment"># gitlab 密码</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">GITLAB_ROOT_EMAIL=</span> <span class="comment"># 管理员邮箱</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> <span class="string">GITLAB_HTTPS=false</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">SSL_SELF_SIGNED=false</span> <span class="comment"># 是否使用自签名的方式，如果是自申请的证书，则需要在gitlab加载一下证书</span></span><br></pre></td></tr></table></figure>
+
+<p>配置好 <code>.yml</code> 文件后，就可以使用 <code>docker-compose up -d</code> ，创建运行了，创建的过程可能会持续数分钟，可以使用 <code>docker logs -f xxx</code> 来查看进度。</p>
+<p>然后就可以访问服务并创建项目了。</p>
+<p><img src="/2020/03/01/Gitlab/PB-Snipaste-13-35-43-379043792025.png" alt="PB-Snipaste-13-35-43-379043792025"></p>
+<h1 id="GitLab平台的备份-amp-恢复"><a href="#GitLab平台的备份-amp-恢复" class="headerlink" title="GitLab平台的备份&amp;恢复"></a>GitLab平台的备份&amp;恢复</h1><h2 id="自动备份"><a href="#自动备份" class="headerlink" title="自动备份"></a>自动备份</h2><p>使用上述方法创建的镜像已经帮我们设置好了一个定时任务，备份的周期是天。</p>
+<p>可以在 <code>.yml</code> 文件内查看到。</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">GITLAB_BACKUP_SCHEDULE=daily</span> <span class="comment"># 周期是天</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">GITLAB_BACKUP_TIME=01:00</span> <span class="comment"># 在每一天01:00时备份</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="设置超期时间"><a href="#设置超期时间" class="headerlink" title="设置超期时间"></a>设置超期时间</h2><p><img src="/2020/03/01/Gitlab/PB-Snipaste-13-52-14-579045792025.png" alt="PB-Snipaste-13-52-14-579045792025"></p>
+<p>默认数值是按秒计算的，如果想要每七天设置一下超时的话，就要设置为604800秒。</p>
+<p>如果不设置，backup都会被保存下来。</p>
+<p>重新编辑 <code>.yml</code>文件，在如下位置添加 <code>- GITLAB_BACKUP_EXPIRY=604800</code> </p>
+<p><img src="/2020/03/01/Gitlab/PB-Snipaste-13-55-38-295042952025.png" alt="PB-Snipaste-13-55-38-295042952025"></p>
+<p>这样在第八天就会自动删除第一天的备份。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 更新配置文件</span></span><br><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure>
+
+<h2 id="手动备份"><a href="#手动备份" class="headerlink" title="手动备份"></a>手动备份</h2><p>在github文档中可以查到方法</p>
+<p><img src="/2020/03/01/Gitlab/PB-Snipaste-13-47-19-517045172025.png" alt="PB-Snipaste-13-47-19-517045172025"></p>
+<h3 id="使用docker-compose手动备份"><a href="#使用docker-compose手动备份" class="headerlink" title="使用docker-compose手动备份"></a>使用docker-compose手动备份</h3><p>使用 </p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker-compose run --rm gitlab app:rake gitlab:backup:create</span><br></pre></td></tr></table></figure>
+
+<p>就备份好了。</p>
+<h2 id="恢复"><a href="#恢复" class="headerlink" title="恢复"></a>恢复</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker-compose run --rm gitlab app:rake gitlab:backup:restore # List available backups</span><br><span class="line">docker-compose run --rm gitlab app:rake gitlab:backup:restore BACKUP=1417624827 # Choose to restore from 1417624827</span><br></pre></td></tr></table></figure>
+
+<p>首先查看备份文件list</p>
+<p><img src="/2020/03/01/Gitlab/PB-Snipaste-14-02-02-789047892025.png" alt="PB-Snipaste-14-02-02-789047892025"></p>
+<p>然后将想要恢复的文件名复制粘贴进去即可</p>
+<p><code>1587794387_2020_04_25_12.9.2_gitlab_backup.tar</code></p>
+<p>会提示： 一旦恢复所有数据库将被覆盖，是否继续，键入yes即可。</p>
+<h1 id="GitLab的权限"><a href="#GitLab的权限" class="headerlink" title="GitLab的权限"></a>GitLab的权限</h1><p>团队协作中可能出现的问题：</p>
+<p>如果把所有的分支全部开放，某人误推送到了主干分支（生产分支）上了，可能会导致一些不可预期的问题。那么就进行权限控制。</p>
+<h2 id="权限控制思路"><a href="#权限控制思路" class="headerlink" title="权限控制思路"></a>权限控制思路</h2><ul>
+<li><p>以组为单元，设置管理员。</p>
+<p>所有参与项目的人员为一个组，管理员负责项目分支的合并，管理员设置主干分支、哪些成员可以添加进来查看。</p>
+</li>
+<li><p>熟悉Merge Request，写好git commit。</p>
+</li>
+<li><p>及时回收权限，或者设置过期时间。</p>
+<p>注意，回收权限时不要删除成员，只把权限回收即可。因为如果删除成员的话就会把他的历史提交一并删除掉，无法溯源。</p>
+</li>
+</ul>
+<p>建议的角色分配</p>
+<p><img src="/2020/03/01/Gitlab/PB-Snipaste-14-21-31-353043532025.png" alt="PB-Snipaste-14-21-31-353043532025"></p>
+<h2 id="组管理-amp-组权限"><a href="#组管理-amp-组权限" class="headerlink" title="组管理&amp;组权限"></a>组管理&amp;组权限</h2><p>GitLab的组类似GitHub上组织的概念</p>
+<p>比如来了一个 <code>frontend-group1</code> 项目组，</p>
+<p><img src="/2020/03/01/Gitlab/PB-Snipaste-14-24-44-3404342025.png" alt="PB-Snipaste-14-24-44-3404342025"></p>
+<p>然后就可以设置组权限，注意这里设置的权限是针对所有项目的权限，和之前的项目权限做区分。</p>
+<h2 id="分支保护"><a href="#分支保护" class="headerlink" title="分支保护"></a>分支保护</h2><p>在 项目 - 设置 - 仓库 - Protected Branches 中设置受保护的分支、允许推送和合并的Roles。</p>
+]]></content>
+      <categories>
+        <category>技术杂谈
+- Git</category>
+      </categories>
+      <tags>
+        <tag>GitLab</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Docker快速上手</title>
+    <url>/2020/01/20/docker/</url>
+    <content><![CDATA[<h1 id="Docker"><a href="#Docker" class="headerlink" title="Docker"></a>Docker</h1><p><img src="/2020/01/20/docker/docker01.png" alt="img"></p><p>Docker 是一个开源的应用容器引擎，基于 <a href="https://www.runoob.com/go/go-tutorial.html" target="_blank" rel="noopener">Go 语言</a> 并遵从 Apache2.0 协议开源。</p><p>Docker 可以让开发者打包他们的应用以及依赖包到一个轻量级、可移植的容器中，然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。</p><a id="more"></a>
+
+
+<p>容器是完全使用沙箱机制，相互之间不会有任何接口（类似 iPhone 的 app）,更重要的是容器性能开销极低。</p>
+<p>Docker 从 17.03 版本之后分为 CE（Community Edition: 社区版） 和 EE（Enterprise Edition: 企业版），我们用社区版就可以了。</p>
+<p>docker技术主要应用在<strong>容器化应用</strong>上。</p>
+<p><img src="/2020/01/20/docker/PB-Snipaste-12-31-52-403044032023.png" alt="PB-Snipaste-12-31-52-403044032023"></p>
+<h1 id="docker虚拟技术和传统虚拟机区别"><a href="#docker虚拟技术和传统虚拟机区别" class="headerlink" title="docker虚拟技术和传统虚拟机区别"></a>docker虚拟技术和传统虚拟机区别</h1><p><img src="/2020/01/20/docker/PB-Snipaste-12-39-01-539045392023.png" alt="PB-Snipaste-12-39-01-539045392023"></p>
+<h1 id="docker主要特性"><a href="#docker主要特性" class="headerlink" title="docker主要特性"></a>docker主要特性</h1><ul>
+<li>文件、资源、网络隔离</li>
+<li><strong>变更管理</strong>、日志记录</li>
+<li><strong>写时复制</strong>的方式创建的根文件系统</li>
+</ul>
+<h1 id="docker安装演示"><a href="#docker安装演示" class="headerlink" title="docker安装演示"></a>docker安装演示</h1><p>环境：</p>
+<p><img src="/2020/01/20/docker/PB-Snipaste-12-58-02-728047282023.png" alt="PB-Snipaste-12-58-02-728047282023"></p>
+<h2 id="删除之前安装过的docker"><a href="#删除之前安装过的docker" class="headerlink" title="删除之前安装过的docker"></a>删除之前安装过的docker</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo yum remove docker \</span><br><span class="line">docker-client \</span><br><span class="line">docker-client-latest \</span><br><span class="line">docker-common \</span><br><span class="line">docker-latest \</span><br><span class="line">docker-latest-logrotate \</span><br><span class="line">docker-logrotate \</span><br><span class="line">docker-engine</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo yum install -y yum-utils \</span><br><span class="line">device-mapper-persistent-data \</span><br><span class="line">lvm2</span><br></pre></td></tr></table></figure>
+
+<h2 id="添加stable的Docker-ce源"><a href="#添加stable的Docker-ce源" class="headerlink" title="添加stable的Docker-ce源"></a>添加stable的Docker-ce源</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo yum-config-manager \</span><br><span class="line">    --add-repo \</span><br><span class="line">    https://download.docker.com/linux/centos/docker-ce.repo</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装docker"><a href="#安装docker" class="headerlink" title="安装docker"></a>安装docker</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo yum install docker-ce docker-ce-cli containerd.io</span><br></pre></td></tr></table></figure>
+
+<h2 id="测试安装"><a href="#测试安装" class="headerlink" title="测试安装"></a>测试安装</h2><p>使用 <code>systemctl start docker</code> 运行起docker来</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">systemctl start docker</span><br></pre></td></tr></table></figure>
+
+<p>查看docker进程</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">systemctl status docker</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2020/01/20/docker/PB-Snipaste-13-18-19-128041282023.png" alt="PB-Snipaste-13-18-19-128041282023"></p>
+<h2 id="第一个docker应用-hello-world"><a href="#第一个docker应用-hello-world" class="headerlink" title="第一个docker应用 - hello-world"></a>第一个docker应用 - hello-world</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker run hello-world</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2020/01/20/docker/PB-Snipaste-13-22-58-499044992023.png" alt="PB-Snipaste-13-22-58-499044992023"></p>
+<h2 id="使用docker中国官方镜像加速"><a href="#使用docker中国官方镜像加速" class="headerlink" title="使用docker中国官方镜像加速"></a>使用docker中国官方镜像加速</h2><p>编辑 <code>/etc/docker/daemon.json</code> ，没有就创建改文件</p>
+<p>添加以下内容</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">   <span class="attr">"registry-mirrors"</span> : [<span class="string">"https://docker.mirrors.ustc.edu.cn"</span>]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后重启 daemon和docker进程</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">systemctl daemon-reload</span><br><span class="line"></span><br><span class="line">systemctl restart docker</span><br></pre></td></tr></table></figure>
+
+<p><em>附： ubuntu上可以使用 <code>service docker restart</code></em> 重启docker镜像</p>
+<h2 id="docker-常用命令"><a href="#docker-常用命令" class="headerlink" title="docker 常用命令"></a>docker 常用命令</h2><ul>
+<li><p><code>docker ps</code> 查看正在运行的容器</p>
+</li>
+<li><p><code>docker ps -a</code> 查看所有容器</p>
+</li>
+<li><p><code>docker stop &lt;id/name&gt;</code> 停止容器</p>
+</li>
+<li><p><code>docker rm &lt;id/name&gt;</code> 删除一个已经停止的容器</p>
+<p><em>注：正在运行的容器是无法删除的</em></p>
+</li>
+<li><p><code>docker logs -f &lt;id/name&gt;</code>  打印log -f表示持续打印</p>
+</li>
+<li><p><code>docker exec [OPTIONS] CONTAINER COMMAND [ARG...]</code> 在运行的容器中执行命令</p>
+<ul>
+<li><strong>-d :</strong>分离模式: 在后台运行</li>
+<li><strong>-i :</strong>即使没有附加也保持STDIN 打开</li>
+<li><strong>-t :</strong>分配一个伪终端</li>
+</ul>
+<p><em>附：进入docker容器 <code>docker exec -i -t  &lt;id/name&gt;/bin/bash</code></em></p>
+</li>
+</ul>
+<h2 id="安装mysql的docker容器"><a href="#安装mysql的docker容器" class="headerlink" title="安装mysql的docker容器"></a>安装mysql的docker容器</h2><p>进入 <a href="https://hub.docker.com/" target="_blank" rel="noopener">Docker Hub</a>， 找到mysql容器的安装方式</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:tag</span><br></pre></td></tr></table></figure>
+
+<p>替换一些参数，自定义一下容器名和密码，这里缺省了 <code>:tag</code> ，就会默认拉取最新的镜像，也可以将<code>tag</code> 设置为想要拉取的版本，参数 <code>-d</code> 意思是后台运行</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker run --name zy-mysql -e MYSQL_ROOT_PASSWORD=123456 -d mysql</span><br></pre></td></tr></table></figure>
+
+<p>然后可以使用 docker ps 查看下载好的镜像了</p>
+<h3 id="映射mysql服务的端口号-p"><a href="#映射mysql服务的端口号-p" class="headerlink" title="映射mysql服务的端口号 -p"></a>映射mysql服务的端口号 <code>-p</code></h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker run --name zy-mysql -e MYSQL_ROOT_PASSWORD=123456 -p 23457:3306 -d mysql</span><br></pre></td></tr></table></figure>
+
+<p>可以看到 <code>-p</code>参数后跟着的 <code>23457:3306</code> ，前面的数字代表 外部（宿主机）端口，后面的数字代表docker内部的端口</p>
+<h2 id="进入容器看一眼"><a href="#进入容器看一眼" class="headerlink" title="进入容器看一眼"></a>进入容器看一眼</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker exec -it zy-mysql /bin/bash</span><br></pre></td></tr></table></figure>
+
+<h2 id="退出docker容器"><a href="#退出docker容器" class="headerlink" title="退出docker容器"></a>退出docker容器</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">exit</span><br></pre></td></tr></table></figure>
+
+<h1 id="docker-compose"><a href="#docker-compose" class="headerlink" title="docker-compose"></a>docker-compose</h1><p>一个场景：当我们有多个docker容器需要统一管理的时候，难道要一个个的run、stop吗？</p>
+<p>显然这样操作太繁琐。</p>
+<p>这时就需要一个集成工具，来帮我们统一管理多个docker镜像，查看、启动、停止等。</p>
+<p>使用一个 <code>.yml</code> 文件来统一管理。</p>
+<p><img src="/2020/01/20/docker/PB-Snipaste-16-04-18-727047272024.png" alt="PB-Snipaste-16-04-18-727047272024"></p>
+<h2 id="安装docker-compose"><a href="#安装docker-compose" class="headerlink" title="安装docker-compose"></a>安装docker-compose</h2><p>参考<a href="https://docs.docker.com/compose/install/" target="_blank" rel="noopener">官方文档</a></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 下载</span></span><br><span class="line">sudo curl -L "https://github.com/docker/compose/releases/download/1.25.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose</span><br><span class="line"><span class="meta">#</span><span class="bash"> 给予执行权限</span></span><br><span class="line">sudo chmod +x /usr/local/bin/docker-compose</span><br><span class="line"><span class="meta">#</span><span class="bash"> 测试</span></span><br><span class="line">docker-compose --version</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>附：安装后执行docker-compose提示 <a href="https://blog.csdn.net/alen_xiaoxin/article/details/104849962" target="_blank" rel="noopener">Cannot open self /usr/local/bin/docker-compose or archive /usr/local/bin/docker-compoe.pkg解决办法</a></p>
+</blockquote>
+<h2 id="编辑-docker-compose-yml-文件"><a href="#编辑-docker-compose-yml-文件" class="headerlink" title="编辑 docker-compose.yml 文件"></a>编辑 docker-compose.yml 文件</h2><p>这里演示启动两个 mysql服务，<code>mysql1</code> 和 <code>mysql2</code></p>
+<p><img src="/2020/01/20/docker/PB-Snipaste-17-38-50-639046392024.png" alt="PB-Snipaste-17-38-50-639046392024"></p>
+<p><em>附： 上图有语法错误，line8、15 的 <code>-</code> 后面应有一个空格</em></p>
+<h2 id="批量启动镜像"><a href="#批量启动镜像" class="headerlink" title="批量启动镜像"></a>批量启动镜像</h2><p>然后就可以使用 <code>docker-compose up -d</code> 根据 <code>.yml</code>文件配置来创建两个容器了</p>
+<p><img src="/2020/01/20/docker/PB-Snipaste-17-52-35-335043352024.png" alt="PB-Snipaste-17-52-35-335043352024"></p>
+<h2 id="停止"><a href="#停止" class="headerlink" title="停止"></a>停止</h2><p>使用<code>docker-compose stop</code> 批量停止</p>
+<p><img src="/2020/01/20/docker/PB-Snipaste-17-59-08-911049112024.png" alt="PB-Snipaste-17-59-08-911049112024"></p>
+<h2 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h2><p><code>docker-compose rm</code></p>
+<p><img src="/2020/01/20/docker/PB-Snipaste-17-59-56-488044882024.png" alt="PB-Snipaste-17-59-56-488044882024"></p>
+<h1 id="使用Docker-hub-提交、拉取自己的镜像"><a href="#使用Docker-hub-提交、拉取自己的镜像" class="headerlink" title="使用Docker hub 提交、拉取自己的镜像"></a>使用<a href="https://hub.docker.com/" target="_blank" rel="noopener">Docker hub</a> 提交、拉取自己的镜像</h1><h2 id="登录"><a href="#登录" class="headerlink" title="登录"></a>登录</h2><p>使用 <code>docker login</code> 可以登录自己的docker账号，然后就可以提交和拉取了</p>
+<p><img src="/2020/01/20/docker/PB-Snipaste-18-04-21-3604362024.png" alt="PB-Snipaste-18-04-21-3604362024"></p>
+<h2 id="创建image"><a href="#创建image" class="headerlink" title="创建image"></a>创建image</h2><p>使用 <code>docker commit 57d92a983a62（容器id） &lt;dockerhub前缀&gt;/&lt;上传的name&gt;[:tag]</code> 来创建镜像</p>
+<p><img src="/2020/01/20/docker/PB-Snipaste-18-08-26-511045112024.png" alt="PB-Snipaste-18-08-26-511045112024"></p>
+<p>使用 <code>docker images</code> 看一眼自己的镜像</p>
+<p><img src="/2020/01/20/docker/PB-Snipaste-18-09-50-903049032024.png" alt="PB-Snipaste-18-09-50-903049032024"></p>
+<h2 id="推送"><a href="#推送" class="headerlink" title="推送"></a>推送</h2><p><code>docker push &lt;dockerhub前缀&gt;/&lt;上传的name&gt;[:tag]</code></p>
+<p>有一些已经存在远端的文件就会 Mounted ，不会再次推送，节约了推送的时间。</p>
+<p><img src="/2020/01/20/docker/PB-Snipaste-18-12-00-167041672024.png" alt="PB-Snipaste-18-12-00-167041672024"></p>
+<p><img src="/2020/01/20/docker/PB-Snipaste-18-15-18-227042272024.png" alt="PB-Snipaste-18-15-18-227042272024"></p>
+<h2 id="拉取"><a href="#拉取" class="headerlink" title="拉取"></a>拉取</h2><p>推送成功后可以在随意一台机器上使用 <code>docker pull &lt;dockerhub前缀&gt;/&lt;上传的name&gt;[:tag]</code> 拉取镜像了</p>
+]]></content>
+      <categories>
+        <category>技术杂谈
+- 运维</category>
+      </categories>
+      <tags>
+        <tag>Docker</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Sass</title>
     <url>/2020/02/10/Sass/</url>
     <content><![CDATA[<h1 id="Sass基础"><a href="#Sass基础" class="headerlink" title="Sass基础"></a>Sass基础</h1><h2 id="Sass整体介绍"><a href="#Sass整体介绍" class="headerlink" title="Sass整体介绍"></a>Sass整体介绍</h2><p>官网介绍Sass是CSS扩展语言。Sass是基于Ruby语言开发的。</p><p>CSS预处理工具。</p><p>需要前置文件，然后进行编译解析，最后生成CSS。</p><p> <img src="/2020/02/10/Sass/image-20191219145953928.png" alt></p><ul>
@@ -70,125 +290,6 @@
         <category>技术杂谈
 - 前端</category>
       </categories>
-  </entry>
-  <entry>
-    <title>Docker快速上手</title>
-    <url>/2020/01/20/docker/</url>
-    <content><![CDATA[<h1 id="Docker"><a href="#Docker" class="headerlink" title="Docker"></a>Docker</h1><p><img src="/2020/01/20/docker/docker01.png" alt="img"></p><p>Docker 是一个开源的应用容器引擎，基于 <a href="https://www.runoob.com/go/go-tutorial.html" target="_blank" rel="noopener">Go 语言</a> 并遵从 Apache2.0 协议开源。</p><p>Docker 可以让开发者打包他们的应用以及依赖包到一个轻量级、可移植的容器中，然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。</p><a id="more"></a>
-
-
-<p>容器是完全使用沙箱机制，相互之间不会有任何接口（类似 iPhone 的 app）,更重要的是容器性能开销极低。</p>
-<p>Docker 从 17.03 版本之后分为 CE（Community Edition: 社区版） 和 EE（Enterprise Edition: 企业版），我们用社区版就可以了。</p>
-<p>docker技术主要应用在<strong>容器化应用</strong>上。</p>
-<p><img src="/2020/01/20/docker/PB-Snipaste-12-31-52-403044032023.png" alt="PB-Snipaste-12-31-52-403044032023"></p>
-<h1 id="docker虚拟技术和传统虚拟机区别"><a href="#docker虚拟技术和传统虚拟机区别" class="headerlink" title="docker虚拟技术和传统虚拟机区别"></a>docker虚拟技术和传统虚拟机区别</h1><p><img src="/2020/01/20/docker/PB-Snipaste-12-39-01-539045392023.png" alt="PB-Snipaste-12-39-01-539045392023"></p>
-<h1 id="docker主要特性"><a href="#docker主要特性" class="headerlink" title="docker主要特性"></a>docker主要特性</h1><ul>
-<li>文件、资源、网络隔离</li>
-<li><strong>变更管理</strong>、日志记录</li>
-<li><strong>写时复制</strong>的方式创建的根文件系统</li>
-</ul>
-<h1 id="docker安装演示"><a href="#docker安装演示" class="headerlink" title="docker安装演示"></a>docker安装演示</h1><p>环境：</p>
-<p><img src="/2020/01/20/docker/PB-Snipaste-12-58-02-728047282023.png" alt="PB-Snipaste-12-58-02-728047282023"></p>
-<h2 id="删除之前安装过的docker"><a href="#删除之前安装过的docker" class="headerlink" title="删除之前安装过的docker"></a>删除之前安装过的docker</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo yum remove docker \</span><br><span class="line">docker-client \</span><br><span class="line">docker-client-latest \</span><br><span class="line">docker-common \</span><br><span class="line">docker-latest \</span><br><span class="line">docker-latest-logrotate \</span><br><span class="line">docker-logrotate \</span><br><span class="line">docker-engine</span><br></pre></td></tr></table></figure>
-
-<h2 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo yum install -y yum-utils \</span><br><span class="line">device-mapper-persistent-data \</span><br><span class="line">lvm2</span><br></pre></td></tr></table></figure>
-
-<h2 id="添加stable的Docker-ce源"><a href="#添加stable的Docker-ce源" class="headerlink" title="添加stable的Docker-ce源"></a>添加stable的Docker-ce源</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo yum-config-manager \</span><br><span class="line">    --add-repo \</span><br><span class="line">    https://download.docker.com/linux/centos/docker-ce.repo</span><br></pre></td></tr></table></figure>
-
-<h2 id="安装docker"><a href="#安装docker" class="headerlink" title="安装docker"></a>安装docker</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo yum install docker-ce docker-ce-cli containerd.io</span><br></pre></td></tr></table></figure>
-
-<h2 id="测试安装"><a href="#测试安装" class="headerlink" title="测试安装"></a>测试安装</h2><p>使用 <code>systemctl start docker</code> 运行起docker来</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">systemctl start docker</span><br></pre></td></tr></table></figure>
-
-<p>查看docker进程</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">systemctl status docker</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2020/01/20/docker/PB-Snipaste-13-18-19-128041282023.png" alt="PB-Snipaste-13-18-19-128041282023"></p>
-<h2 id="第一个docker应用-hello-world"><a href="#第一个docker应用-hello-world" class="headerlink" title="第一个docker应用 - hello-world"></a>第一个docker应用 - hello-world</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker run hello-world</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2020/01/20/docker/PB-Snipaste-13-22-58-499044992023.png" alt="PB-Snipaste-13-22-58-499044992023"></p>
-<h2 id="使用docker中国官方镜像加速"><a href="#使用docker中国官方镜像加速" class="headerlink" title="使用docker中国官方镜像加速"></a>使用docker中国官方镜像加速</h2><p>编辑 <code>/etc/docker/daemon.json</code> ，没有就创建改文件</p>
-<p>添加以下内容</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"registry-mirrors"</span>:[<span class="string">"https://registry.docker-cn.com"</span>]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>然后重启 daemon和docker进程</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">systemctl daemon-reload</span><br><span class="line"></span><br><span class="line">systemctl restart docker</span><br></pre></td></tr></table></figure>
-
-<p><em>附： ubuntu上可以使用 <code>service docker restart</code></em> 重启docker镜像</p>
-<h2 id="docker-常用命令"><a href="#docker-常用命令" class="headerlink" title="docker 常用命令"></a>docker 常用命令</h2><ul>
-<li><p><code>docker ps</code> 查看正在运行的容器</p>
-</li>
-<li><p><code>docker ps -a</code> 查看所有容器</p>
-</li>
-<li><p><code>docker stop &lt;id/name&gt;</code> 停止容器</p>
-</li>
-<li><p><code>docker rm &lt;id/name&gt;</code> 删除一个已经停止的容器</p>
-<p><em>注：正在运行的容器是无法删除的</em></p>
-</li>
-<li><p><code>docker logs -f &lt;id/name&gt;</code>  打印log -f表示持续打印</p>
-</li>
-<li><p><code>docker exec [OPTIONS] CONTAINER COMMAND [ARG...]</code> 在运行的容器中执行命令</p>
-<ul>
-<li><strong>-d :</strong>分离模式: 在后台运行</li>
-<li><strong>-i :</strong>即使没有附加也保持STDIN 打开</li>
-<li><strong>-t :</strong>分配一个伪终端</li>
-</ul>
-<p><em>附：进入docker容器 <code>docker exec -i -t  &lt;id/name&gt;/bin/bash</code></em></p>
-</li>
-</ul>
-<h2 id="安装mysql的docker容器"><a href="#安装mysql的docker容器" class="headerlink" title="安装mysql的docker容器"></a>安装mysql的docker容器</h2><p>进入 <a href="https://hub.docker.com/" target="_blank" rel="noopener">Docker Hub</a>， 找到mysql容器的安装方式</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:tag</span><br></pre></td></tr></table></figure>
-
-<p>替换一些参数，自定义一下容器名和密码，这里缺省了 <code>:tag</code> ，就会默认拉取最新的镜像，也可以将<code>tag</code> 设置为想要拉取的版本，参数 <code>-d</code> 意思是后台运行</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker run --name zy-mysql -e MYSQL_ROOT_PASSWORD=123456 -d mysql</span><br></pre></td></tr></table></figure>
-
-<p>然后可以使用 docker ps 查看下载好的镜像了</p>
-<h3 id="映射mysql服务的端口号-p"><a href="#映射mysql服务的端口号-p" class="headerlink" title="映射mysql服务的端口号 -p"></a>映射mysql服务的端口号 <code>-p</code></h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker run --name zy-mysql -e MYSQL_ROOT_PASSWORD=123456 -p 23457:3306 -d mysql</span><br></pre></td></tr></table></figure>
-
-<p>可以看到 <code>-p</code>参数后跟着的 <code>23457:3306</code> ，前面的数字代表 外部（宿主机）端口，后面的数字代表docker内部的端口</p>
-<h2 id="进入容器看一眼"><a href="#进入容器看一眼" class="headerlink" title="进入容器看一眼"></a>进入容器看一眼</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker exec -it zy-mysql /bin/bash</span><br></pre></td></tr></table></figure>
-
-
-
-<h1 id="docker-compose"><a href="#docker-compose" class="headerlink" title="docker-compose"></a>docker-compose</h1><p>一个场景：当我们有多个docker容器需要统一管理的时候，难道要一个个的run、stop吗？</p>
-<p>显然这样操作太繁琐。</p>
-<p>这时就需要一个集成工具，来帮我们统一管理多个docker镜像，查看、启动、停止等。</p>
-<p>使用一个 <code>.yml</code> 文件来统一管理。</p>
-<p><img src="/2020/01/20/docker/PB-Snipaste-16-04-18-727047272024.png" alt="PB-Snipaste-16-04-18-727047272024"></p>
-<h2 id="安装docker-compose"><a href="#安装docker-compose" class="headerlink" title="安装docker-compose"></a>安装docker-compose</h2><p>参考<a href="https://docs.docker.com/compose/install/" target="_blank" rel="noopener">官方文档</a></p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 下载</span></span><br><span class="line">sudo curl -L "https://github.com/docker/compose/releases/download/1.25.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose</span><br><span class="line"><span class="meta">#</span><span class="bash"> 给予执行权限</span></span><br><span class="line">sudo chmod +x /usr/local/bin/docker-compose</span><br><span class="line"><span class="meta">#</span><span class="bash"> 测试</span></span><br><span class="line">docker-compose --version</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>附：安装后执行docker-compose提示 <a href="https://blog.csdn.net/alen_xiaoxin/article/details/104849962" target="_blank" rel="noopener">Cannot open self /usr/local/bin/docker-compose or archive /usr/local/bin/docker-compoe.pkg解决办法</a></p>
-</blockquote>
-<h2 id="编辑-docker-compose-yml-文件"><a href="#编辑-docker-compose-yml-文件" class="headerlink" title="编辑 docker-compose.yml 文件"></a>编辑 docker-compose.yml 文件</h2><p>这里演示启动两个 mysql服务，<code>mysql1</code> 和 <code>mysql2</code></p>
-<p><img src="/2020/01/20/docker/PB-Snipaste-17-38-50-639046392024.png" alt="PB-Snipaste-17-38-50-639046392024"></p>
-<p><em>附： 上图有语法错误，line8、15 的 <code>-</code> 后面应有一个空格</em></p>
-<h2 id="批量启动镜像"><a href="#批量启动镜像" class="headerlink" title="批量启动镜像"></a>批量启动镜像</h2><p>然后就可以使用 <code>docker-compose up -d</code> 根据 <code>.yml</code>文件配置来创建两个容器了</p>
-<p><img src="/2020/01/20/docker/PB-Snipaste-17-52-35-335043352024.png" alt="PB-Snipaste-17-52-35-335043352024"></p>
-<h2 id="停止"><a href="#停止" class="headerlink" title="停止"></a>停止</h2><p>使用<code>docker-compose stop</code> 批量停止</p>
-<p><img src="/2020/01/20/docker/PB-Snipaste-17-59-08-911049112024.png" alt="PB-Snipaste-17-59-08-911049112024"></p>
-<h2 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h2><p><code>docker-compose rm</code></p>
-<p><img src="/2020/01/20/docker/PB-Snipaste-17-59-56-488044882024.png" alt="PB-Snipaste-17-59-56-488044882024"></p>
-<h1 id="使用Docker-hub-提交、拉取自己的镜像"><a href="#使用Docker-hub-提交、拉取自己的镜像" class="headerlink" title="使用Docker hub 提交、拉取自己的镜像"></a>使用<a href="https://hub.docker.com/" target="_blank" rel="noopener">Docker hub</a> 提交、拉取自己的镜像</h1><h2 id="登录"><a href="#登录" class="headerlink" title="登录"></a>登录</h2><p>使用 <code>docker login</code> 可以登录自己的docker账号，然后就可以提交和拉取了</p>
-<p><img src="/2020/01/20/docker/PB-Snipaste-18-04-21-3604362024.png" alt="PB-Snipaste-18-04-21-3604362024"></p>
-<h2 id="创建image"><a href="#创建image" class="headerlink" title="创建image"></a>创建image</h2><p>使用 <code>docker commit 57d92a983a62（容器id） &lt;dockerhub前缀&gt;/&lt;上传的name&gt;[:tag]</code> 来创建镜像</p>
-<p><img src="/2020/01/20/docker/PB-Snipaste-18-08-26-511045112024.png" alt="PB-Snipaste-18-08-26-511045112024"></p>
-<p>使用 <code>docker images</code> 看一眼自己的镜像</p>
-<p><img src="/2020/01/20/docker/PB-Snipaste-18-09-50-903049032024.png" alt="PB-Snipaste-18-09-50-903049032024"></p>
-<h2 id="推送"><a href="#推送" class="headerlink" title="推送"></a>推送</h2><p><code>docker push &lt;dockerhub前缀&gt;/&lt;上传的name&gt;[:tag]</code></p>
-<p>有一些已经存在远端的文件就会 Mounted ，不会再次推送，节约了推送的时间。</p>
-<p><img src="/2020/01/20/docker/PB-Snipaste-18-12-00-167041672024.png" alt="PB-Snipaste-18-12-00-167041672024"></p>
-<p><img src="/2020/01/20/docker/PB-Snipaste-18-15-18-227042272024.png" alt="PB-Snipaste-18-15-18-227042272024"></p>
-<h2 id="拉取"><a href="#拉取" class="headerlink" title="拉取"></a>拉取</h2><p>推送成功后可以在随意一台机器上使用 <code>docker pull &lt;dockerhub前缀&gt;/&lt;上传的name&gt;[:tag]</code> 拉取镜像了</p>
-]]></content>
-      <categories>
-        <category>技术杂谈
-- 运维</category>
-      </categories>
-      <tags>
-        <tag>Docker</tag>
-      </tags>
   </entry>
   <entry>
     <title>深入理解Git</title>
