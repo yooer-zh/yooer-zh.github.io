@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.2">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.2" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.2">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":30,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="PromisePromise对象用于表示一个异步操作的最终状态（完成或失败）以及其返回的值。简单地说 Promise 对象中存放着未来我们要做的事情，比如一个异步操作，等操作完成之后就会返回相应的结果，成功或失败都有相应的事情做。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ES6-Promise">
+<meta property="og:url" content="http://yoursite.com/2019/11/21/ES6Promise/index.html">
+<meta property="og:site_name" content="&lt;- To be continued ..">
+<meta property="og:description" content="PromisePromise对象用于表示一个异步操作的最终状态（完成或失败）以及其返回的值。简单地说 Promise 对象中存放着未来我们要做的事情，比如一个异步操作，等操作完成之后就会返回相应的结果，成功或失败都有相应的事情做。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/2019/11/21/ES6Promise/PB-Snipaste-17-21-19-3605362029.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/21/ES6Promise/PB-Snipaste-17-26-22-512055122029.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/21/ES6Promise/PB-Snipaste-17-37-19-582055822029.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/21/ES6Promise/PB-Snipaste-17-50-07-999059992029.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/21/ES6Promise/PB-Snipaste-17-56-37-065050652029.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/21/ES6Promise/PB-Snipaste-17-57-24-611056112029.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/21/ES6Promise/PB-Snipaste-18-44-56-277052772029.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/21/ES6Promise/PB-Snipaste-18-47-53-3105312029.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/21/ES6Promise/PB-Snipaste-18-51-04-381053812029.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/21/ES6Promise/PB-Snipaste-18-54-16-991059912029.png">
+<meta property="article:published_time" content="2019-11-21T04:00:00.000Z">
+<meta property="article:modified_time" content="2020-05-29T12:15:01.349Z">
+<meta property="article:author" content="张一二">
+<meta property="article:tag" content="前端">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2019/11/21/ES6Promise/PB-Snipaste-17-21-19-3605362029.png">
+
+<link rel="canonical" href="http://yoursite.com/2019/11/21/ES6Promise/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>ES6-Promise | <- To be continued ..</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title"><- To be continued ..</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">4</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">4</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">7</span></a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/21/ES6Promise/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="张一二">
+      <meta itemprop="description" content="Always reliable">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="<- To be continued ..">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ES6-Promise
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-21 12:00:00" itemprop="dateCreated datePublished" datetime="2019-11-21T12:00:00+08:00">2019-11-21</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF-ES6/" itemprop="url" rel="index">
+                    <span itemprop="name">前端 - ES6</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Promise"><a href="#Promise" class="headerlink" title="Promise"></a>Promise</h1><p>Promise对象用于表示一个异步操作的最终状态（完成或失败）以及其返回的值。</p><p>简单地说 Promise 对象中存放着未来我们要做的事情，比如一个异步操作，等操作完成之后就会返回相应的结果，成功或失败都有相应的事情做。</p><a id="more"></a>
+
+<h1 id="传统异步操作"><a href="#传统异步操作" class="headerlink" title="传统异步操作"></a>传统异步操作</h1><p>由于JS是单线程语言，传统的异步需要依赖于回调函数的形式。</p>
+<p>但是如果出现 多层操作，即这一次的操作需要依赖于 上一次异步操作返回的数据，那么就会形成多层嵌套。</p>
+<p>这时代码的维护就会变得非常困难。Promise就可以解决这种问题。</p>
+<p>看一下最简单的 Promise的用法 </p>
+<p><img src="/2019/11/21/ES6Promise/PB-Snipaste-17-21-19-3605362029.png" alt></p>
+<h1 id="对比传统回调和Promise"><a href="#对比传统回调和Promise" class="headerlink" title="对比传统回调和Promise"></a>对比传统回调和Promise</h1><p>通过一个小例子来看</p>
+<h2 id="传统回调"><a href="#传统回调" class="headerlink" title="传统回调"></a>传统回调</h2><p><img src="/2019/11/21/ES6Promise/PB-Snipaste-17-26-22-512055122029.png" alt></p>
+<p>可以看到会嵌套好多层，在业务复杂的时候代码维护变得极其困难。</p>
+<h2 id="Promise-1"><a href="#Promise-1" class="headerlink" title="Promise"></a>Promise</h2><p><img src="/2019/11/21/ES6Promise/PB-Snipaste-17-37-19-582055822029.png" alt></p>
+<h1 id="信任问题"><a href="#信任问题" class="headerlink" title="信任问题"></a>信任问题</h1><p>了解</p>
+<p>Promise不单单解决了毁掉地狱的问题。</p>
+<p>上面的例子是：    </p>
+<p>在 .then 中传递了一个函数过去，然后在一个Promise的实例中根据场合调用</p>
+<p>但是在我们使用第三方库的时候，我们把自己写的回调函数交给第三方库来执行，但是无法控制第三方库会怎样处理我们的回调函数，比如会不会执行、会不会多次执行等，这就出现了 <strong>控制反转</strong>，我们把控制权交给了第三方库。</p>
+<p>使用Promise可以改善这种情况，比如如果调用两次 resolve的话和调用一次效果是一样的不会出现BUG。</p>
+<h1 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h1><h3 id="then的第二个参数配合reject"><a href="#then的第二个参数配合reject" class="headerlink" title="then的第二个参数配合reject"></a>then的第二个参数配合reject</h3><p>上面介绍了Promise在异步操作成功的时候做的事情，那么错误处理呢。</p>
+<p>这里需要注意： Promise判断<code>then</code>，也就是 <code>resolve</code> 和 <code>reject</code> 的时候，都是异步的！ 所以 <code>try、catch</code> 对它是没有用的。</p>
+<p>处理错误的方式就是在then中除了传入 <code>resolve</code> 参数之外，再传一个 <code>reject</code> 参数，对应失败时候做的事情。</p>
+<p><img src="/2019/11/21/ES6Promise/PB-Snipaste-17-50-07-999059992029.png" alt></p>
+<p>需要注意的是，resolve和reject 只能传入一个参数供 .then 使用，如果传入了多个就拿不到了。</p>
+<h3 id="catch"><a href="#catch" class="headerlink" title="catch"></a>catch</h3><p>这是一种错误处理方式，下面看另一种，使用 <code>catch</code>捕获错误</p>
+<p><img src="/2019/11/21/ES6Promise/PB-Snipaste-17-56-37-065050652029.png" alt></p>
+<p>ES标准没有给到很好的无限catch的解决方案，可以持续关注</p>
+<h3 id="finally"><a href="#finally" class="headerlink" title="finally"></a>finally</h3><p><img src="/2019/11/21/ES6Promise/PB-Snipaste-17-57-24-611056112029.png" alt></p>
+<h1 id="Promise的三种状态"><a href="#Promise的三种状态" class="headerlink" title="Promise的三种状态"></a>Promise的三种状态</h1><p>Promise实例共有三种状态</p>
+<ul>
+<li>pending - 进行中</li>
+<li>fulfilled - 成功</li>
+<li>rejected - 失败</li>
+</ul>
+<p>状态只能从进行中=&gt;成功，或 进行中=&gt;失败，状态的改变称为<strong>决议</strong>，一旦决议就不能再修改。</p>
+<h1 id="Promise-all"><a href="#Promise-all" class="headerlink" title="Promise.all()"></a>Promise.all()</h1><p>可以把多个实例重新包装成新的 promise实例。</p>
+<p>接收一个数组，最后返回的也是一个promise的实例。</p>
+<p>分三种情况</p>
+<ol>
+<li>所有promise都决议为成功，那么promise.all 就决议为成功，并把所有返回的resolve参数组合成一个数组返回，并且顺序也是一一对应的。</li>
+<li>任意一个promise决议为失败，promise.all 就立即决议为失败，并且把决议失败的promise再传递出来</li>
+<li>如果是空数组，promise.all 会立即决议为成功</li>
+</ol>
+<p>应用在 <strong>需要多个请求的数据 才能进行下一步操作的情况</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> p = <span class="built_in">Promise</span>.all([getData1(), getData2(), getData3(), getData4()]);</span><br><span class="line"></span><br><span class="line">p.then(<span class="function">(<span class="params">arr</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(arr); <span class="comment">// arr 里就是上面四个方法的resolve的集合</span></span><br><span class="line">&#125;, e =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(e); <span class="comment">// 上面有一个决议失败就走这里</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>如果不使用 promise.all 的话，就需要声明一个变量count计数，在每个异步操作成功后 count+1，最后再做判断。</p>
+<h1 id="Promise-race"><a href="#Promise-race" class="headerlink" title="Promise.race()"></a>Promise.race()</h1><p>接收一个数组，里面也都是promise实例，不同的是</p>
+<p>这么多个promise实例，一旦有一个成功了，promise.race 就会马上返回相应的promise实例，就如race竞赛的意思。</p>
+<p>如果传入空数组，就会永远被挂起。</p>
+<h1 id="Promise-resolve"><a href="#Promise-resolve" class="headerlink" title="Promise.resolve()"></a>Promise.resolve()</h1><p>表示决议成功</p>
+<p>在接收参数的时候有三种情况</p>
+<h2 id="传递一个普通的值"><a href="#传递一个普通的值" class="headerlink" title="传递一个普通的值"></a>传递一个普通的值</h2><p><img src="/2019/11/21/ES6Promise/PB-Snipaste-18-44-56-277052772029.png" alt></p>
+<h2 id="传递一个promise实例"><a href="#传递一个promise实例" class="headerlink" title="传递一个promise实例"></a>传递一个promise实例</h2><p><img src="/2019/11/21/ES6Promise/PB-Snipaste-18-47-53-3105312029.png" alt></p>
+<h2 id="传递thenable对象"><a href="#传递thenable对象" class="headerlink" title="传递thenable对象"></a>传递thenable对象</h2><p>这个概念有点类似 类数组</p>
+<p><img src="/2019/11/21/ES6Promise/PB-Snipaste-18-51-04-381053812029.png" alt></p>
+<h1 id="看一个异步例子"><a href="#看一个异步例子" class="headerlink" title="看一个异步例子"></a>看一个异步例子</h1><p><img src="/2019/11/21/ES6Promise/PB-Snipaste-18-54-16-991059912029.png" alt></p>
+<p>打印结果为 1 2 3 4 6 5</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag"># 前端</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2019/11/14/ES6%E8%A7%A3%E6%9E%84%E8%B5%8B%E5%80%BC/" rel="next" title="ES6解构赋值">
+                  <i class="fa fa-chevron-left"></i> ES6解构赋值
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/2019/12/28/git/" rel="prev" title="深入理解Git">
+                  深入理解Git <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Promise"><span class="nav-number">1.</span> <span class="nav-text">Promise</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#传统异步操作"><span class="nav-number">2.</span> <span class="nav-text">传统异步操作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#对比传统回调和Promise"><span class="nav-number">3.</span> <span class="nav-text">对比传统回调和Promise</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#传统回调"><span class="nav-number">3.1.</span> <span class="nav-text">传统回调</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Promise-1"><span class="nav-number">3.2.</span> <span class="nav-text">Promise</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#信任问题"><span class="nav-number">4.</span> <span class="nav-text">信任问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#错误处理"><span class="nav-number">5.</span> <span class="nav-text">错误处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#then的第二个参数配合reject"><span class="nav-number">5.0.1.</span> <span class="nav-text">then的第二个参数配合reject</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#catch"><span class="nav-number">5.0.2.</span> <span class="nav-text">catch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#finally"><span class="nav-number">5.0.3.</span> <span class="nav-text">finally</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Promise的三种状态"><span class="nav-number">6.</span> <span class="nav-text">Promise的三种状态</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Promise-all"><span class="nav-number">7.</span> <span class="nav-text">Promise.all()</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Promise-race"><span class="nav-number">8.</span> <span class="nav-text">Promise.race()</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Promise-resolve"><span class="nav-number">9.</span> <span class="nav-text">Promise.resolve()</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#传递一个普通的值"><span class="nav-number">9.1.</span> <span class="nav-text">传递一个普通的值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#传递一个promise实例"><span class="nav-number">9.2.</span> <span class="nav-text">传递一个promise实例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#传递thenable对象"><span class="nav-number">9.3.</span> <span class="nav-text">传递thenable对象</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#看一个异步例子"><span class="nav-number">10.</span> <span class="nav-text">看一个异步例子</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="张一二"
+    src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">张一二</p>
+  <div class="site-description" itemprop="description">Always reliable</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张一二</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.4.2.js"></script>
+
+<script src="/js/motion.js?v=7.4.2.js"></script>
+
+
+<script src="/js/schemes/pisces.js?v=7.4.2.js"></script>
+
+
+<script src="/js/next-boot.js?v=7.4.2.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+  
+<script src="/js/local-search.js?v=7.4.2.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
