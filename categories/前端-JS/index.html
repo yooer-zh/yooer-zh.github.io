@@ -54,14 +54,14 @@
   <meta name="description" content="Always reliable">
 <meta property="og:type" content="website">
 <meta property="og:title" content="&lt;- To be continued ..">
-<meta property="og:url" content="http://yoursite.com/categories/%E5%89%8D%E7%AB%AF/index.html">
+<meta property="og:url" content="http://yoursite.com/categories/%E5%89%8D%E7%AB%AF-JS/index.html">
 <meta property="og:site_name" content="&lt;- To be continued ..">
 <meta property="og:description" content="Always reliable">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:author" content="张一二">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://yoursite.com/categories/%E5%89%8D%E7%AB%AF/">
+<link rel="canonical" href="http://yoursite.com/categories/%E5%89%8D%E7%AB%AF-JS/">
 
 
 <script id="page-configurations">
@@ -75,7 +75,7 @@
   };
 </script>
 
-  <title>分类: 前端 | <- To be continued ..</title>
+  <title>分类: 前端 - JS | <- To be continued ..</title>
   
 
 
@@ -152,12 +152,12 @@
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">4</span></a>
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">6</span></a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">8</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">11</span></a>
 
   </li>
         <li class="menu-item menu-item-commonweal">
@@ -217,14 +217,14 @@
   <div class="post-block">
     <div class="posts-collapse">
       <div class="collection-title">
-        <h1 class="collection-header">前端
+        <h1 class="collection-header">前端 - JS
           <small>分类</small>
         </h1>
       </div>
 
       
     <div class="collection-year">
-      <h1 class="collection-header">2020</h1>
+      <h1 class="collection-header">2019</h1>
     </div>
 
   <article itemscope itemtype="http://schema.org/Article">
@@ -232,15 +232,35 @@
 
       <div class="post-meta">
         <time itemprop="dateCreated"
-              datetime="2020-02-10T12:00:00+08:00"
-              content="2020-02-10">
-          02-10
+              datetime="2019-01-20T12:00:00+08:00"
+              content="2019-01-20">
+          01-20
         </time>
       </div>
 
       <h2 class="post-title">
-          <a class="post-title-link" href="/2020/02/10/Sass/" itemprop="url">
-            <span itemprop="name">Sass</span>
+          <a class="post-title-link" href="/2019/01/20/JavaScript%E6%B7%B1%E5%85%A5/" itemprop="url">
+            <span itemprop="name">JavaScript深入理解</span>
+          </a>
+      </h2>
+
+    </header>
+  </article>
+
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <div class="post-meta">
+        <time itemprop="dateCreated"
+              datetime="2019-01-10T12:00:00+08:00"
+              content="2019-01-10">
+          01-10
+        </time>
+      </div>
+
+      <h2 class="post-title">
+          <a class="post-title-link" href="/2019/01/10/JavaScript/" itemprop="url">
+            <span itemprop="name">JavaScript基础</span>
           </a>
       </h2>
 
@@ -298,14 +318,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-count">11</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -404,6 +424,25 @@
 
 
 
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
 
 
 

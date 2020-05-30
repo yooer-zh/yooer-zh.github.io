@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.2">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.2" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.2">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":30,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="生命周期图示选项数据 data data computed methods 模板语法 data 模板中直接嵌入js代码 指令 v-html、v-on、v-bind等 计算属性 过滤器 计算属性 computed">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue基础">
+<meta property="og:url" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:site_name" content="&lt;- To be continued ..">
+<meta property="og:description" content="生命周期图示选项数据 data data computed methods 模板语法 data 模板中直接嵌入js代码 指令 v-html、v-on、v-bind等 计算属性 过滤器 计算属性 computed">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/lifecycle.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304130707269.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304135159167.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304134142966.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304151528360.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304151547044.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304153020080.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304153339478.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304153423576.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304160807281.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304153436175.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304161638753.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304163221254.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304163239885.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304165902445.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304212141937.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304214749319.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304214800556.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304214905161.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304220748690.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304220757595.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200305134935840.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200305141825815.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200305141843782.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200305142222566.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200305142031513.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200305152119476.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200305152155219.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200305152325866.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200305152519852.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200305154930049.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200305155004080.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200305155032129.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200305225932442.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200305225945009.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200305230044255.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200305231034292.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200306153118229.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200306153149557.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200306153837455.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307014221367.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307020824614.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307021117926.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307021449670.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307021645261.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307021818102.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307134828082.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307134925511.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307135012618.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307135333159.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307135641162.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307135905122.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307135931538.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307140603393.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307143138674.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307165322924.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307170210177.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307170251495.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307170256528.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307170333329.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307175432068.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307175648393.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307175700193.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200308171231487.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200308171421547.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200308172954084.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200308173043946.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200308173115738.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200309153021614.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200309153344540.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200309153605980.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200309153615974.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200309153652924.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200309160827077.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200309160903028.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200309161207112.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200309162744305.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200309162804672.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200309170823584.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200309170834545.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200309171019961.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200310135311380.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200310135418089.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200310135816270.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200310142051006.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200310142058167.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200310142429877.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200310144611377.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311005727099.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311005836585.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311005812363.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311020543328.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311020557067.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311020608899.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311020621156.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311022322905.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311022550579.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311022610515.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311022755180.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311023210696.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311023234572.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311023633287.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311023654259.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311024509226.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311024618985.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311130531470.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311133230502.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311133741551.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311133825686.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311144437273.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311144506731.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311144648193.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311144729882.png">
+<meta property="article:published_time" content="2019-04-20T04:00:00.000Z">
+<meta property="article:modified_time" content="2020-05-30T09:37:27.922Z">
+<meta property="article:author" content="张一二">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/lifecycle.png">
+
+<link rel="canonical" href="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Vue基础 | <- To be continued ..</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title"><- To be continued ..</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">4</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">6</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">11</span></a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/20/Vue%E5%9F%BA%E7%A1%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="张一二">
+      <meta itemprop="description" content="Always reliable">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="<- To be continued ..">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Vue基础
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-04-20 12:00:00" itemprop="dateCreated datePublished" datetime="2019-04-20T12:00:00+08:00">2019-04-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF-Vue/" itemprop="url" rel="index">
+                    <span itemprop="name">前端 - Vue</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h1><h2 id="图示"><a href="#图示" class="headerlink" title="图示"></a>图示</h2><p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/lifecycle.png" alt></p><p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304130707269.png" alt="image-20200304130707269"></p><h1 id="选项数据-data"><a href="#选项数据-data" class="headerlink" title="选项数据 data"></a>选项数据 data</h1><ul>
+<li>data</li>
+<li>computed</li>
+<li>methods</li>
+</ul><p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304135159167.png" alt="image-20200304135159167"></p><p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304134142966.png" alt="image-20200304134142966"></p><h1 id="模板语法"><a href="#模板语法" class="headerlink" title="模板语法"></a>模板语法</h1><ul>
+<li>data</li>
+<li>模板中直接嵌入js代码</li>
+<li>指令 v-html、v-on、v-bind等</li>
+<li>计算属性</li>
+<li>过滤器</li>
+</ul><p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304151528360.png" alt="image-20200304151528360"></p><p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304151547044.png" alt="image-20200304151547044"></p><h1 id="计算属性-computed"><a href="#计算属性-computed" class="headerlink" title="计算属性 computed"></a>计算属性 computed</h1><a id="more"></a>
+
+
+
+
+
+
+
+<ul>
+<li>在模板中放入太多的逻辑会让模板过重且难以维护</li>
+<li>计算属性下所有函数可以放到computed中</li>
+</ul>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304153020080.png" alt="image-20200304153020080"></p>
+<h1 id="Class与Style动态绑定-v-bind"><a href="#Class与Style动态绑定-v-bind" class="headerlink" title="Class与Style动态绑定  v-bind"></a>Class与Style动态绑定  v-bind</h1><p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304153339478.png" alt="image-20200304153339478"></p>
+<h2 id="class-绑定方式"><a href="#class-绑定方式" class="headerlink" title="class 绑定方式"></a>class 绑定方式</h2><p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304153423576.png" alt="image-20200304153423576"></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304160807281.png" alt="image-20200304160807281"></p>
+<h2 id="style-绑定方式"><a href="#style-绑定方式" class="headerlink" title="style 绑定方式"></a>style 绑定方式</h2><p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304153436175.png" alt="image-20200304153436175"></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304161638753.png" alt="image-20200304161638753"></p>
+<h1 id="条件渲染-v-if-v-else-v-else-if"><a href="#条件渲染-v-if-v-else-v-else-if" class="headerlink" title="条件渲染 v-if v-else v-else-if"></a>条件渲染 v-if v-else v-else-if</h1><p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304163221254.png" alt="image-20200304163221254"></p>
+<h1 id="列表渲染-v-for"><a href="#列表渲染-v-for" class="headerlink" title="列表渲染 v-for"></a>列表渲染 v-for</h1><p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304163239885.png" alt="image-20200304163239885"></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304165902445.png" alt="image-20200304165902445"></p>
+<h1 id="事件处理器"><a href="#事件处理器" class="headerlink" title="事件处理器"></a>事件处理器</h1><p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304212141937.png" alt="image-20200304212141937"></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304214749319.png" alt="image-20200304214749319"></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304214800556.png" alt="image-20200304214800556"></p>
+<h1 id="自定义组件"><a href="#自定义组件" class="headerlink" title="自定义组件"></a>自定义组件</h1><p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304214905161.png" alt="image-20200304214905161"></p>
+<p> 之前的Demo都是下载src/pages/ 目录下， pages目录下可以理解为一个个的 页面</p>
+<p>compontents 组件，是放在 页面内的。</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304220748690.png" alt="image-20200304220748690"></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200304220757595.png" alt="image-20200304220757595"></p>
+<h2 id="父子组件之间通信！"><a href="#父子组件之间通信！" class="headerlink" title="父子组件之间通信！"></a><a href="https://segmentfault.com/a/1190000014381699" target="_blank" rel="noopener">父子组件之间通信！</a></h2><h2 id="VUE中的DOM操作-this-refs"><a href="#VUE中的DOM操作-this-refs" class="headerlink" title="VUE中的DOM操作  this.$refs"></a>VUE中的DOM操作  this.$refs</h2><p>不建议使用VUE的时候直接操作DOM</p>
+<p>非要操作的时候要在 <strong>mounted</strong> 生命周期函数里面使用，因为vue使用了虚拟DOM，挂载后也就变成了真实DOM</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200305134935840.png" alt="image-20200305134935840"></p>
+<h1 id="过渡效果-transition"><a href="#过渡效果-transition" class="headerlink" title="过渡效果 transition"></a>过渡效果 transition</h1><p>通过样式的方式写过渡</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200305141825815.png" alt="image-20200305141825815"></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200305141843782.png" alt="image-20200305141843782"></p>
+<h1 id="路由-vue-router"><a href="#路由-vue-router" class="headerlink" title="路由 vue-router"></a><a href="https://router.vuejs.org/zh/" target="_blank" rel="noopener">路由 vue-router</a></h1><p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200305142222566.png" alt="image-20200305142222566"></p>
+<p>之前做的Demo每个页面都是单独的，在<code>router/index.js</code> 里面添加路由</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200305142031513.png" alt="image-20200305142031513"></p>
+<p>解决页面之间的跳转</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200305152119476.png" alt="image-20200305152119476"></p>
+<p>被跳转的页面 获取 params以及query： </p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200305152155219.png" alt="image-20200305152155219"></p>
+<h1 id="！状态管理-vuex"><a href="#！状态管理-vuex" class="headerlink" title="！状态管理 vuex"></a>！状态管理 <a href="https://vuex.vuejs.org/zh/" target="_blank" rel="noopener">vuex</a></h1><p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200305152325866.png" alt="image-20200305152325866"></p>
+<p>看图理解</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200305152519852.png" alt="image-20200305152519852"></p>
+<p>这种多页面跳转的话，通过路由传值就会变得特别麻烦</p>
+<p>这时候只要有一个共享数据池，也就是全局状态管理，那么就不需要传了，直接去vuex里面取就可以了。</p>
+<h2 id="新建目录"><a href="#新建目录" class="headerlink" title="新建目录"></a>新建目录</h2><p>vuex的store目录在 /src/目录下</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200305154930049.png" alt="image-20200305154930049"></p>
+<p>在Vue实例中使用</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200305155004080.png" alt="image-20200305155004080"></p>
+<p>基本使用（获取、修改）</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200305155032129.png" alt="image-20200305155032129"></p>
+<h1 id="Slot-插槽"><a href="#Slot-插槽" class="headerlink" title="Slot 插槽"></a>Slot 插槽</h1><p>常用于组件调用中</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200305225932442.png" alt="image-20200305225932442"></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200305225945009.png" alt="image-20200305225945009"></p>
+<h1 id="vue-resource请求"><a href="#vue-resource请求" class="headerlink" title="vue-resource请求"></a>vue-resource请求</h1><p>类似ajax请求，给后台发送请求接口</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200305230044255.png" alt="image-20200305230044255"></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200305231034292.png" alt="image-20200305231034292"></p>
+<h1 id="移动组件库-Mint-UI"><a href="#移动组件库-Mint-UI" class="headerlink" title="移动组件库 Mint UI"></a>移动组件库 <a href="http://mint-ui.github.io/docs/#/zh-cn" target="_blank" rel="noopener">Mint UI</a></h1><p>前言：</p>
+<p>VUE最主要的就是在做组件开发，最终还是要回归组件开发，大部分时间都是在做组件开发，每个页面只是调用开发的组件。上述就是别人写好的组件，打包好了，我们可以直接用。</p>
+<h1 id="练手小项目"><a href="#练手小项目" class="headerlink" title="练手小项目"></a>练手小项目</h1><p>使用vue脚手架搭建</p>
+<p>为了做移动端适配，使用 rem 布局， 新建 <code>/src/config/rem.js</code> 在<code>main.js</code> 下做配置</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// eslint-disable no-undef */</span></span><br><span class="line"><span class="comment">// 第一行做eslint忽略</span></span><br><span class="line">!<span class="function"><span class="keyword">function</span>(<span class="params">n</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span>  e=n.document,</span><br><span class="line">       t=e.documentElement,</span><br><span class="line">       i=<span class="number">720</span>,</span><br><span class="line">       d=i/<span class="number">100</span>,</span><br><span class="line">       o=<span class="string">"orientationchange"</span><span class="keyword">in</span> n?<span class="string">"orientationchange"</span>:<span class="string">"resize"</span>,</span><br><span class="line">       a=<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">           <span class="keyword">var</span> n=t.clientWidth||<span class="number">320</span>;n&gt;<span class="number">720</span>&amp;&amp;(n=<span class="number">720</span>);</span><br><span class="line">           t.style.fontSize=n/d+<span class="string">"px"</span></span><br><span class="line">       &#125;;</span><br><span class="line">       e.addEventListener&amp;&amp;(n.addEventListener(o,a,!<span class="number">1</span>),e.addEventListener(<span class="string">"DOMContentLoaded"</span>,a,!<span class="number">1</span>))</span><br><span class="line">&#125;(<span class="built_in">window</span>);</span><br></pre></td></tr></table></figure>
+
+<p>然后在 <code>main.js</code> 中引入一下 <code>import &#39;@/config/rem&#39;</code>  就可以使用了</p>
+<p><strong>注意： 此章节配置都是基于vue-cli2 版本，cli3需另外研究</strong></p>
+<p>px自动转换rem、可配置转换</p>
+<ol>
+<li><p>下载loader <code>npm i px2rem-loader</code></p>
+</li>
+<li><p>在 <code>/build/utils.js 中配置</code></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200306153118229.png" alt="image-20200306153118229"></p>
+</li>
+<li><p>使用，选择性转换</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200306153149557.png" alt="image-20200306153149557"></p>
+<p>在项目中任意地方使用，默认会将<code>px</code> 转换为<code>rem</code> ，后面加注释 <code>/* no */</code> 则为不转换</p>
+</li>
+</ol>
+<h2 id="实现head-部分"><a href="#实现head-部分" class="headerlink" title="实现head 部分"></a>实现head 部分</h2><p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200306153837455.png" alt="image-20200306153837455"></p>
+<p><strong>header是很多页面都会共享使用的，所以把它做成一个公共组件，可复用。</strong></p>
+<h1 id="项目2-商城"><a href="#项目2-商城" class="headerlink" title="项目2 商城"></a>项目2 商城</h1><h2 id="创建目录结构"><a href="#创建目录结构" class="headerlink" title="创建目录结构"></a>创建目录结构</h2><p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307014221367.png" alt="image-20200307014221367"></p>
+<h2 id="静态文件准备"><a href="#静态文件准备" class="headerlink" title="静态文件准备"></a>静态文件准备</h2><p>准备一些图片，主要学习scss的架构</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307020824614.png" alt="image-20200307020824614"></p>
+<h2 id="项目初始化"><a href="#项目初始化" class="headerlink" title="项目初始化"></a>项目初始化</h2><p>把脚手架初始化的东西删掉，然后再加自己的东西</p>
+<p>安装</p>
+<p><code>babel-polyfill</code> ：添加ES6的API使用</p>
+<p><code>fastclick</code>：解决移动端300毫秒点击</p>
+<p>在<code>main.js</code>入口文件下配置</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307021117926.png" alt="image-20200307021117926"></p>
+<p>安装sass依赖 <code>node-sass</code>  <code>sass-loader</code></p>
+<p><code>utils.js</code> 中已经预配置好了，不需要自己配置</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307021449670.png" alt="image-20200307021449670"></p>
+<p><code>@</code> 代表 <code>/src</code> 路径，其实是在 <code>build/webpack.base.conf.js</code> 中配置的</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307021645261.png" alt="image-20200307021645261"></p>
+<p>可以自己再配置一些常用路径，如下</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307021818102.png" alt="image-20200307021818102"></p>
+<h2 id="搭建项目骨架、分析"><a href="#搭建项目骨架、分析" class="headerlink" title="搭建项目骨架、分析"></a>搭建项目骨架、分析</h2><p>将 <code>&lt;html&gt;</code> 、 <code>&lt;body&gt;</code> 、 <code>app</code> 设置超出隐藏、宽高设置成100%</p>
+<p>这时候就设置好了一个可视区，并且上面三个元素是无法滚动的，浏览器默认的滚动条被禁用</p>
+<p>只需要再在里面设置子元素可滚动</p>
+<p>在父组件、页面级父组件中，只做标签的占位，不会写具体代码，具体代码就放到子组件中写，易于复用。也就是说子组件不包含位置信息，位置信息交给父组件。</p>
+<p><code>App.vue</code></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307134828082.png" alt="image-20200307134828082"></p>
+<p>新建 <code>_comtainers.scss</code></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307134925511.png" alt="image-20200307134925511"></p>
+<p>在 <code>_base.scss</code> 中设置html、body宽高为 100%</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307135012618.png" alt="image-20200307135012618"></p>
+<h2 id="底部tabbar导航条组件"><a href="#底部tabbar导航条组件" class="headerlink" title="底部tabbar导航条组件"></a>底部tabbar导航条组件</h2><p>组件创建到 <code>components/</code> 目录下，病床简称目录的形式，因为可能会包含一些资源文件，就近引入。</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307135333159.png" alt="image-20200307135333159"></p>
+<p>最后集成scss，创建 <code>_tabbar.scss</code>，将sass部分copy过去</p>
+<p><strong>注意：</strong> 因为项目使用flex布局，关于flex布局会经常用到，就要提取出一个mixin函数，就可以复用了。</p>
+<p>在 <code>_mixins.scss</code> 中定义</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307135641162.png" alt="image-20200307135641162"></p>
+<p>定义居中，参数接收水平还是垂直排列，flex布局默认为row行排列</p>
+<p>效果：</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307135905122.png" alt="image-20200307135905122"></p>
+<p>变为</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307135931538.png" alt="image-20200307135931538"></p>
+<p>最后，router-link 在被激活的时候会被加上 class<code>router-link-active</code>，</p>
+<p>我们定义被激活后的样式，在 <code>tabbar/index.vue</code>中，这段css代码不需要集成</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307140603393.png" alt="image-20200307140603393"></p>
+<h2 id="vue-router"><a href="#vue-router" class="headerlink" title="vue-router"></a>vue-router</h2><p>先把页面pages建好</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307143138674.png" alt="image-20200307143138674"></p>
+<p>在 <code>router/index.js/</code> 里配置路由</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"><span class="keyword">import</span> Router <span class="keyword">from</span> <span class="string">'vue-router'</span></span><br><span class="line"><span class="comment">// import Home from 'pages/home'  // 路由懒加载后就不在这引入了 ！！</span></span><br><span class="line"><span class="comment">// import Cart from 'pages/cart'</span></span><br><span class="line"><span class="comment">// import Category from 'pages/category'</span></span><br><span class="line"><span class="comment">// import Personal from 'pages/personal'</span></span><br><span class="line"><span class="comment">// import Product from 'pages/product'</span></span><br><span class="line"></span><br><span class="line">Vue.use(Router)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> routes = [</span><br><span class="line">  &#123;</span><br><span class="line">    name: <span class="string">'home'</span>,</span><br><span class="line">    path: <span class="string">'/home'</span>,</span><br><span class="line">    component: <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">import</span>(<span class="string">'pages/home'</span>),  <span class="comment">// 路由懒加载 ！！</span></span><br><span class="line">    children: [</span><br><span class="line">      &#123;</span><br><span class="line">        name: <span class="string">'home-product'</span>,</span><br><span class="line">        path: <span class="string">'product/:id'</span>,  <span class="comment">// 子路由开始不能加斜杠 / ！！</span></span><br><span class="line">        component: <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">import</span>(<span class="string">'pages/product'</span>)</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    name: <span class="string">'cart'</span>,</span><br><span class="line">    path: <span class="string">'/cart'</span>,</span><br><span class="line">    component: <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">import</span>(<span class="string">'pages/cart'</span>)</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    name: <span class="string">'category'</span>,</span><br><span class="line">    path: <span class="string">'/category'</span>,</span><br><span class="line">    component: <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">import</span>(<span class="string">'pages/category'</span>)</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    name: <span class="string">'personal'</span>,</span><br><span class="line">    path: <span class="string">'/personal'</span>,</span><br><span class="line">    component: <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">import</span>(<span class="string">'pages/personal'</span>)</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    path: <span class="string">'*'</span>,  <span class="comment">// 在输入的路由匹配不到的时候就会自动跳转home</span></span><br><span class="line">    redirect: <span class="string">'/home'</span></span><br><span class="line">  &#125;</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">new</span> Router(&#123;</span><br><span class="line">  routes  <span class="comment">// ES6写法</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="首页开发"><a href="#首页开发" class="headerlink" title="首页开发"></a>首页开发</h2><h3 id="结构、样式"><a href="#结构、样式" class="headerlink" title="结构、样式"></a>结构、样式</h3><p><code>App.vue</code> 中代码</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307165322924.png" alt="image-20200307165322924"></p>
+<p>首页包裹在 <code>.g-view-container</code> 容器中</p>
+<p>分析首页的组件： topbar、 backtop、以及中间的显示区域</p>
+<p>同样，在home.vue 中先把位置信息写好</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307170210177.png" alt="image-20200307170210177"></p>
+<p>然后在 <code>_container.scss</code> 中写各个container的样式</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307170251495.png" alt="image-20200307170251495"></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307170256528.png" alt="image-20200307170256528"></p>
+<p>然后在<code>home.vue</code> 中写一下大的 <code>class = home</code> 的样式</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307170333329.png" alt="image-20200307170333329"></p>
+<h3 id="导航条"><a href="#导航条" class="headerlink" title="导航条"></a>导航条</h3><p>在 <code>components/home</code> 下新建 <code>header.vue</code> 子组件文件，这样维护起来就很方便了</p>
+<p>这里把header抽象出一个基础组件，<strong>与业务逻辑无关的</strong>，具体里面放什么内容就通过插槽提供。</p>
+<p>新建<code>src/base/index.vue</code> ，编写插槽</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307175432068.png" alt="image-20200307175432068"></p>
+<p>在<code>pages/home/header.vue</code> 中使用</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307175648393.png" alt="image-20200307175648393"></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200307175700193.png" alt="image-20200307175700193"></p>
+<h4 id="解决导航条前面两个元素不存在时，消息图标不会在最右边"><a href="#解决导航条前面两个元素不存在时，消息图标不会在最右边" class="headerlink" title="解决导航条前面两个元素不存在时，消息图标不会在最右边"></a>解决导航条前面两个元素不存在时，消息图标不会在最右边</h4><p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200308171231487.png" alt="image-20200308171231487"></p>
+<h3 id="导航条在其他页面样式"><a href="#导航条在其他页面样式" class="headerlink" title="导航条在其他页面样式"></a>导航条在其他页面样式</h3><p>购物车页面： 中间的文字是相对整个导航条居中的，并且超出文字会显示省略号</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200308171421547.png" alt="image-20200308171421547"></p>
+<p>添加标题 h1 标签，并定义传入title属性才会显示</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200308172954084.png" alt="image-20200308172954084"></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200308173043946.png" alt="image-20200308173043946"></p>
+<p>附： ellipsis样式：</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200308173115738.png" alt="image-20200308173115738"></p>
+<h2 id="幻灯片组件"><a href="#幻灯片组件" class="headerlink" title="幻灯片组件"></a>幻灯片组件</h2><p>借助Swiper来实现，但是swiper不是针对vue开发的，所以要使用 Vue-Awesome-Swiper</p>
+<p>，基于Swiper4</p>
+<p>下载<code>npm i --save vue-awesome-swiper</code> </p>
+<p>在 <code>/home</code> 下创建幻灯片组件并引入</p>
+<p>由于 幻灯片组件和业务关系不大，是很通用的基础组件，所以在base里再创建一个基础组件MeSlider</p>
+<p>引入基础组件，我们要做： 在基础组件上面包装一层，填充相关数据变成 业务组件。</p>
+<ol>
+<li><p>新建 <code>base/slider/index.vue</code></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200309153021614.png" alt="image-20200309153021614"></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200309153344540.png" alt="image-20200309153344540"></p>
+</li>
+<li><p>创建 <code>home/slider.vue</code> 子组件</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200309153605980.png" alt="image-20200309153605980"></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200309153615974.png" alt="image-20200309153615974"></p>
+<p>把幻灯片相关的配置写到了 <code>home/config.js</code> 文件下了</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200309153652924.png" alt="image-20200309153652924"></p>
+</li>
+</ol>
+<h2 id="异步请求服务器端的数据"><a href="#异步请求服务器端的数据" class="headerlink" title="异步请求服务器端的数据"></a>异步请求服务器端的数据</h2><p>使用 axios，新建 <code>api/home.js</code> 专门处理 home页面下的请求</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200309160827077.png" alt="image-20200309160827077"></p>
+<p>然后在 <code>home/slider</code> 下使用接口，替换数据</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200309160903028.png" alt="image-20200309160903028"></p>
+<p>但是！ 现在会出现BUG： 明明开了无缝滚动，但是却没有效果</p>
+<p>是因为在 异步数据 获取之前，就已经调用了基础slider组件，组件已经初始化了，里面没有数据也就是空空如也，那么就没有办法进行内部的运算，无缝滚动也就出现了BUG</p>
+<p>解决办法： 等数据获取完成，再渲染slider组件。</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200309161207112.png" alt="image-20200309161207112"></p>
+<p>v-if：只有值为true的时候才会加载组件，和v-show的区别：v-show是先加载然后隐藏在DOM中，设置了 display=none</p>
+<p>这样就可以正常显示了</p>
+<p>最终添加错误处理后的 <code>api/home.js</code></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200309162744305.png" alt="image-20200309162744305"></p>
+<p><code>api/config.js</code></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200309162804672.png" alt="image-20200309162804672"></p>
+<h2 id="Loading-组件"><a href="#Loading-组件" class="headerlink" title="Loading 组件"></a>Loading 组件</h2><p>新建 <code>base/loading</code></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200309170823584.png" alt="image-20200309170823584"></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200309170834545.png" alt="image-20200309170834545"></p>
+<p>在 <code>home/slider.vue</code> 中使用</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200309171019961.png" alt="image-20200309171019961"></p>
+<h2 id="滚动条组件"><a href="#滚动条组件" class="headerlink" title="滚动条组件"></a>滚动条组件</h2><p>滚动条组件是和业务无关的组件，创建 <code>base/scroll/index.vue</code>，在home组件中引入</p>
+<p>滚动条使用的是<code>vue-awesome-swiper</code> 所以再scroll组件中引入</p>
+<p>对于滚动条来说，swiper里面就只有一个swiperSlide，所有可以滚动的内容都在这个swiperSlide里面</p>
+<p><code>base/scroll</code></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200310135311380.png" alt="image-20200310135311380"></p>
+<p>而且！ 可视区高度应该只是可视区的高度，不能被内容撑开，内容的高度可以很高</p>
+<p><code>home/index.vue</code> 滚动条组件包裹所有内容</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200310135418089.png" alt="image-20200310135418089"></p>
+<p>然后需要设置样式：</p>
+<p>可视区不让内容撑开，设置宽高为100%，让可视区撑开他父容器</p>
+<p>然后内容高度为auto即可</p>
+<p><code>base/scroll/index.vue</code></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200310135816270.png" alt="image-20200310135816270"></p>
+<h2 id="导航面板"><a href="#导航面板" class="headerlink" title="导航面板"></a>导航面板</h2><p>新建 <code>home/nav/index.vue</code></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200310142051006.png" alt="image-20200310142051006"></p>
+<p>使用flex布局</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200310142058167.png" alt="image-20200310142058167"></p>
+<h2 id="热卖推荐"><a href="#热卖推荐" class="headerlink" title="热卖推荐"></a>热卖推荐</h2><h3 id="jsonp封装"><a href="#jsonp封装" class="headerlink" title="jsonp封装"></a>jsonp封装</h3><p>npm安装 jsonp库</p>
+<p>jspnp的API如下：</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200310142429877.png" alt="image-20200310142429877"></p>
+<p>我们要对它做一层封装： </p>
+<ol>
+<li>使用promise代替回调fn</li>
+<li>支持传入data</li>
+</ol>
+<p><code>assets/js/jsonp.js</code></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200310144611377.png" alt="image-20200310144611377"></p>
+<h3 id="从服务器端获取数据"><a href="#从服务器端获取数据" class="headerlink" title="从服务器端获取数据"></a>从服务器端获取数据</h3><p>在 <code>api/home.js</code>下暴露方法，供 <code>hone.vue</code> 获取热门推荐数据</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311005727099.png" alt="image-20200311005727099"></p>
+<p><code>api/config.js</code></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311005836585.png" alt="image-20200311005836585"></p>
+<p><code>recommend.vue</code></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311005812363.png" alt="image-20200311005812363"></p>
+<h3 id="结构和样式"><a href="#结构和样式" class="headerlink" title="结构和样式"></a>结构和样式</h3><p><code>home/recommend.vue</code></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311020543328.png" alt="image-20200311020543328"></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311020557067.png" alt="image-20200311020557067"></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311020608899.png" alt="image-20200311020608899"></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311020621156.png" alt="image-20200311020621156"></p>
+<h3 id="更新滚动条"><a href="#更新滚动条" class="headerlink" title="更新滚动条"></a>更新滚动条</h3><p>现在样式写完了，但是滚动条不能滚动了</p>
+<p>是因为 数据是异步加载的，在滚动条组件加载完成的时候，数据还没有过来，所以滚动条无法计算现在的高度，就无法滚动，方法有2： </p>
+<ol>
+<li><p>通过传参数让滚动条自己更新</p>
+</li>
+<li><p>滚动条组件暴露一个API，在父组件可以调用方法更新滚动条</p>
+<p>子组件<code>recommend</code>更新完数据冒泡，父组件<code>home</code>更新滚动条</p>
+</li>
+</ol>
+<p>在 <code>recommend.vue</code> 中，通过 <code>$emit</code> 暴露loaded方法，传出recommends，原理就是子组件向父组件传值</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311022322905.png" alt="image-20200311022322905"></p>
+<p>在 <code>home/index</code> 中接收事件</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311022550579.png" alt="image-20200311022550579"></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311022610515.png" alt="image-20200311022610515"></p>
+<p>首页接收到recommends后，给滚动条<code>me-scroll</code>传入 data数据，默认是一个空数据，当加载好之后就变成一个有值的数组，这样值发生了变化，就可以在 <code>me-scroll</code>中 watch变化，然后更新滚动条</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311022755180.png" alt="image-20200311022755180"></p>
+<p><code>base/scroll/index</code></p>
+<p>先接收传入的data</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311023210696.png" alt="image-20200311023210696"></p>
+<p>watch数据的改变，改变后就调用update方法</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311023234572.png" alt="image-20200311023234572"></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311023633287.png" alt="image-20200311023633287"></p>
+<p>怎么获取swiper实例？ 传入ref值</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311023654259.png" alt="image-20200311023654259"></p>
+<p><strong>伏笔： 这么写还有问题，现在还有没暴露出来， TODO</strong></p>
+<h3 id="懒加载"><a href="#懒加载" class="headerlink" title="懒加载"></a>懒加载</h3><p>使用 <code>vue-lazyload</code> 插件</p>
+<p>在 <code>main.js</code> 下注册</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311024509226.png" alt="image-20200311024509226"></p>
+<p>使用的时候只需要把 <code>:src</code> 改成 <code>v-lazy</code> 就可以了</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311024618985.png" alt="image-20200311024618985"></p>
+<h2 id="下拉刷新"><a href="#下拉刷新" class="headerlink" title="下拉刷新"></a>下拉刷新</h2><p>在滚动条组件中添加 loading 动画组件</p>
+<p><code>base/scroll/index</code>  相对来说是父组件</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311130531470.png" alt="image-20200311130531470"></p>
+<p>swiper提供监听下拉长度的事件，拉到100px就改变文字、刷新</p>
+<p>在swiper的配置项里面使用 API</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311133230502.png" alt="image-20200311133230502"></p>
+<p>添加scroll() 方法</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311133741551.png" alt="image-20200311133741551"></p>
+<p><code>base/loading</code> 相对是子组件</p>
+<p>添加修改文本的方法供父组件调用</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311133825686.png" alt="image-20200311133825686"></p>
+<h2 id="松手刷新"><a href="#松手刷新" class="headerlink" title="松手刷新"></a>松手刷新</h2><p>监听松手事件，swiper提供了事件 touchEnd</p>
+<p><code>base/scroll</code>  添加swiper原生事件</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311144437273.png" alt="image-20200311144437273"></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311144506731.png" alt="image-20200311144506731"></p>
+<p>然后在它的父组件 <code>home/index.vue</code> 中监听pull-down</p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311144648193.png" alt="image-20200311144648193"></p>
+<p><img src="/2019/04/20/Vue%E5%9F%BA%E7%A1%80/image-20200311144729882.png" alt="image-20200311144729882"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2019/01/20/JavaScript%E6%B7%B1%E5%85%A5/" rel="next" title="JavaScript深入理解">
+                  <i class="fa fa-chevron-left"></i> JavaScript深入理解
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/2019/11/10/ES6%E5%9F%BA%E7%A1%80/" rel="prev" title="ES6基础及let、const">
+                  ES6基础及let、const <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#生命周期"><span class="nav-number">1.</span> <span class="nav-text">生命周期</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#图示"><span class="nav-number">1.1.</span> <span class="nav-text">图示</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#选项数据-data"><span class="nav-number">2.</span> <span class="nav-text">选项数据 data</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#模板语法"><span class="nav-number">3.</span> <span class="nav-text">模板语法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#计算属性-computed"><span class="nav-number">4.</span> <span class="nav-text">计算属性 computed</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Class与Style动态绑定-v-bind"><span class="nav-number">5.</span> <span class="nav-text">Class与Style动态绑定  v-bind</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#class-绑定方式"><span class="nav-number">5.1.</span> <span class="nav-text">class 绑定方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#style-绑定方式"><span class="nav-number">5.2.</span> <span class="nav-text">style 绑定方式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#条件渲染-v-if-v-else-v-else-if"><span class="nav-number">6.</span> <span class="nav-text">条件渲染 v-if v-else v-else-if</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#列表渲染-v-for"><span class="nav-number">7.</span> <span class="nav-text">列表渲染 v-for</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#事件处理器"><span class="nav-number">8.</span> <span class="nav-text">事件处理器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#自定义组件"><span class="nav-number">9.</span> <span class="nav-text">自定义组件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#父子组件之间通信！"><span class="nav-number">9.1.</span> <span class="nav-text">父子组件之间通信！</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VUE中的DOM操作-this-refs"><span class="nav-number">9.2.</span> <span class="nav-text">VUE中的DOM操作  this.$refs</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#过渡效果-transition"><span class="nav-number">10.</span> <span class="nav-text">过渡效果 transition</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#路由-vue-router"><span class="nav-number">11.</span> <span class="nav-text">路由 vue-router</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#！状态管理-vuex"><span class="nav-number">12.</span> <span class="nav-text">！状态管理 vuex</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#新建目录"><span class="nav-number">12.1.</span> <span class="nav-text">新建目录</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Slot-插槽"><span class="nav-number">13.</span> <span class="nav-text">Slot 插槽</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#vue-resource请求"><span class="nav-number">14.</span> <span class="nav-text">vue-resource请求</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#移动组件库-Mint-UI"><span class="nav-number">15.</span> <span class="nav-text">移动组件库 Mint UI</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#练手小项目"><span class="nav-number">16.</span> <span class="nav-text">练手小项目</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#实现head-部分"><span class="nav-number">16.1.</span> <span class="nav-text">实现head 部分</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#项目2-商城"><span class="nav-number">17.</span> <span class="nav-text">项目2 商城</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建目录结构"><span class="nav-number">17.1.</span> <span class="nav-text">创建目录结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#静态文件准备"><span class="nav-number">17.2.</span> <span class="nav-text">静态文件准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#项目初始化"><span class="nav-number">17.3.</span> <span class="nav-text">项目初始化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#搭建项目骨架、分析"><span class="nav-number">17.4.</span> <span class="nav-text">搭建项目骨架、分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#底部tabbar导航条组件"><span class="nav-number">17.5.</span> <span class="nav-text">底部tabbar导航条组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vue-router"><span class="nav-number">17.6.</span> <span class="nav-text">vue-router</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#首页开发"><span class="nav-number">17.7.</span> <span class="nav-text">首页开发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#结构、样式"><span class="nav-number">17.7.1.</span> <span class="nav-text">结构、样式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#导航条"><span class="nav-number">17.7.2.</span> <span class="nav-text">导航条</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#解决导航条前面两个元素不存在时，消息图标不会在最右边"><span class="nav-number">17.7.2.1.</span> <span class="nav-text">解决导航条前面两个元素不存在时，消息图标不会在最右边</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#导航条在其他页面样式"><span class="nav-number">17.7.3.</span> <span class="nav-text">导航条在其他页面样式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#幻灯片组件"><span class="nav-number">17.8.</span> <span class="nav-text">幻灯片组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#异步请求服务器端的数据"><span class="nav-number">17.9.</span> <span class="nav-text">异步请求服务器端的数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Loading-组件"><span class="nav-number">17.10.</span> <span class="nav-text">Loading 组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#滚动条组件"><span class="nav-number">17.11.</span> <span class="nav-text">滚动条组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#导航面板"><span class="nav-number">17.12.</span> <span class="nav-text">导航面板</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#热卖推荐"><span class="nav-number">17.13.</span> <span class="nav-text">热卖推荐</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#jsonp封装"><span class="nav-number">17.13.1.</span> <span class="nav-text">jsonp封装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从服务器端获取数据"><span class="nav-number">17.13.2.</span> <span class="nav-text">从服务器端获取数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结构和样式"><span class="nav-number">17.13.3.</span> <span class="nav-text">结构和样式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更新滚动条"><span class="nav-number">17.13.4.</span> <span class="nav-text">更新滚动条</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#懒加载"><span class="nav-number">17.13.5.</span> <span class="nav-text">懒加载</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下拉刷新"><span class="nav-number">17.14.</span> <span class="nav-text">下拉刷新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#松手刷新"><span class="nav-number">17.15.</span> <span class="nav-text">松手刷新</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="张一二"
+    src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">张一二</p>
+  <div class="site-description" itemprop="description">Always reliable</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张一二</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.4.2.js"></script>
+
+<script src="/js/motion.js?v=7.4.2.js"></script>
+
+
+<script src="/js/schemes/pisces.js?v=7.4.2.js"></script>
+
+
+<script src="/js/next-boot.js?v=7.4.2.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+  
+<script src="/js/local-search.js?v=7.4.2.js"></script>
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
